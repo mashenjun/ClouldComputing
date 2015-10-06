@@ -1,0 +1,6 @@
+.idea/
+*.iml
+*.pyc
+*.class
+AWSExample/
+Examples/
