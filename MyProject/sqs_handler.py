@@ -12,8 +12,8 @@ Definition
 """
 from boto3.session import Session
 
-session = Session(aws_access_key_id='AKIAJLKUUWG5UZCRNTCQ',
-                  aws_secret_access_key='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',
+session = Session(aws_access_key_id='AKIAJ2J7J53PLJR6Z4WA',
+                  aws_secret_access_key='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',
                   region_name='eu-central-1')
                   
                   
@@ -30,7 +30,7 @@ def receive_msg(client,queue):
     return msg
     
 def create_queue(sqs,queueName):
-	taskq=sqs.create_queue(QueueName=queueName)
+	taskq=sqs.create_queue(QueueName=queueName,Attributes={'VisibilityTimeout':'1'})
 	return taskq
 
 def get_queue(sqs,queueName):
@@ -68,15 +68,18 @@ Call
 """
 s3=connect_to_s3()
 sqs=get_service_resource()
+#task2=create_queue(sqs,'test2')
+client=get_client()
+delete_queue(client,get_queue(sqs,'test2'))
 #Create a msg in the TestSQS queue
 #create_msg(sqs,'TestSQS','AHAHAH')
 
 #receive the msg and print out the Body
-client=get_client()
-queue=get_queue(sqs,'TestSQS')
-msg=receive_msg(client,queue)
-response(msg)
-change_visibility(client,queue,msg,120)
+#client=get_client()
+#queue=get_queue(sqs,'TestSQS')
+#msg=receive_msg(client,queue)
+#response(msg)
+#change_visibility(client,queue,msg,10)
 
 #delete the msg
 #delete_msg(client,msg,queue)
