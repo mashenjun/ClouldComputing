@@ -1,20 +1,14 @@
-"""
-Created on Wed Oct  7 11:41:36 2015
-
-@author: yun
-"""
-
-import boto3
-import boto
-
-"""
-Definition
-"""
 from boto3.session import Session
+from configFile.instanceConfig import Config
 
-session = Session(aws_access_key_id='AKIAJLKUUWG5UZCRNTCQ',
-                  aws_secret_access_key='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',
-                  region_name='eu-central-1')
+config = Config()
+ACCESS_KEY_ID = config.ConfigSectionMap()["aws_access_key_id"]
+SECRET_ACCESS_KEY = config.ConfigSectionMap()["aws_secret_access_key"]
+REGION_NAME = 'eu-central-1'
+
+session = Session(aws_access_key_id=ACCESS_KEY_ID,
+                  aws_secret_access_key=SECRET_ACCESS_KEY,
+                  region_name=REGION_NAME)
 
 
 def get_service_resource():
@@ -61,20 +55,3 @@ def delete_msg(client, msg, queue):
 def delete_queue(client, queue):
     response = client.delete_queue(QueueUrl=queue.url)
     return response
-
-
-"""
-Call
-"""
-sqs = get_service_resource()
-# Create a msg in the TestSQS queue
-#create_msg(sqs,'TestSQS','AHAHAH')
-
-#receive the msg and print out the Body
-client = get_client()
-queue = get_queue(sqs, 'TestSQS')
-msg = receive_msg(client, queue)
-response(msg)
-
-#delete the msg
-#delete_msg(client,msg,queue)
