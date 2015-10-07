@@ -10,13 +10,19 @@ import boto
 """
 Definition
 """
+from boto3.session import Session
 
+session = Session(aws_access_key_id='AKIAJLKUUWG5UZCRNTCQ',
+                  aws_secret_access_key='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',
+                  region_name='eu-central-1')
+                  
+                  
 def connect_to_s3():
-	s3=boto3.resource('s3')
+	s3=session.resource('s3')
 	return s3
 
 def get_service_resource():
-	sqs=boto3.resource('sqs')
+	sqs=session.resource('sqs')
 	return sqs
  
 def receive_msg(client,queue):
@@ -36,7 +42,7 @@ def create_msg(sqs,queueName,msg):
 	thisQueue.send_message(MessageBody=msg)
  
 def get_client():
-	client=boto3.client('sqs')
+	client=session.client('sqs')
 	return client
     
 def response(msg):
