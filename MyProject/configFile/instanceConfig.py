@@ -14,6 +14,7 @@ class Config:
         self.config.readfp(open(self.get_home_dir() + CONFIG_FILE))
         self.config.read([self.get_home_dir() + CONFIG_FILE])
 
+
     def ConfigSectionMap(self):
         dict1 = {}
         section = DEFAULT_SECTION
@@ -29,7 +30,7 @@ class Config:
         return dict1
 
     def get_home_dir(self):
-        dir = os.getcwd()
+        dir = os.path.dirname(__file__)
         if not dir:
             dir = '.'
         if not dir.endswith('/'):
