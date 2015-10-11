@@ -1,7 +1,10 @@
+
+
 __author__ = 'mashenjun'
 from scipy.misc import imread,imsave
-import os, shutil
+import os,cPickle
 from os.path import dirname, join
+
 
 IMAGE_FOLDER = "images"
 IMAGE_RESULT_FOLDER = "imageResult"
@@ -28,6 +31,10 @@ def delet_result():
         except Exception, e:
             print e
 
+def read_image_to_string(imagename):
+    img = read_image(imagename)
+    im_string = cPickle.dumps(img)
+    return im_string
 # def main():
 #     readimage("china.jpg")
 #
