@@ -2,4 +2,6 @@
 *.iml
 *.pyc
 *.class
-
+*.jpg
+AWSExample/
+Examples/
