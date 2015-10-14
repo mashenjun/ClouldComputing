@@ -74,3 +74,4 @@ def change_visibility(client, queue, msg, time):
 
 def get_queue_count(queue):
     return queue.attributes.get("ApproximateNumberOfMessages")
+
