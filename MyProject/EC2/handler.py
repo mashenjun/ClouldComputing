@@ -42,6 +42,10 @@ def get_InstanceId(instance):
     instanceId=instance[0]._id
     return instanceId
 
+def get_instance(conn,instance_id):
+    instance=conn.get_all_instances(instance_ids=[instance_id])[0].instances[0]
+    return instance
+
 def set_key_name(ec2,instanceId,key,value):
     response=ec2.create_tags(Resources=[instanceId,],Tags=[{'Key':key,'Value':value},])
     return response

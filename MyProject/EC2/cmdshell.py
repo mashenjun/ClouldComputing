@@ -14,10 +14,7 @@ from boto.manage.cmdshell import sshclient_from_instance
 #status,stdout,stderr=ssh_client.run('ls -al')
 #ssh_client.put_file("/home/yun/Documents/Cloudcomputing/hello.py","/home/ubuntu/CloudComputing/hello.py")
 
-def get_instance(conn,instance_id):
-    instance=conn.get_all_instances(instance_ids=[instance_id])[0].instances[0]
-    return instance
-    
+
 def ssh_to_instance(instance,key_path):
     ssh_client=sshclient_from_instance(instance,ssh_key_file=key_path,user_name='ubuntu')
     return ssh_client
