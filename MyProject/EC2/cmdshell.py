@@ -29,13 +29,18 @@ def ssh_run_command(ssh_client,str_command):
 def ssh_put_file(ssh_client,src_full,dst_full):
     ssh_client.put_file(src_full,dst_full)
     
-    
+
+
 """
 Application
 """
-conn=boto.ec2.connect_to_region("eu-central-1")
-instance=get_instance(conn,'i-804dfb41')
-ssh_client=ssh_to_instance(instance,'/home/yun/Documents/Cloudcomputing/mashenjun.pem')
-ssh_put_file(ssh_client,"/home/yun/Documents/Cloudcomputing/hello.py","/home/ubuntu/CloudComputing/hello.py")
-status,stdout,stderr=ssh_run_command(ssh_client,"python /home/ubuntu/CloudComputing/hello.py")
-print stdout
+def main():
+    conn=boto.ec2.connect_to_region("eu-central-1")
+    instance=get_instance(conn,'i-804dfb41')
+    ssh_client=ssh_to_instance(instance,'/home/yun/Documents/Cloudcomputing/mashenjun.pem')
+    ssh_put_file(ssh_client,"/home/yun/Documents/Cloudcomputing/hello.py","/home/ubuntu/CloudComputing/hello.py")
+    status,stdout,stderr=ssh_run_command(ssh_client,"python /home/ubuntu/CloudComputing/hello.py")
+    print stdout
+
+if __name__ == "__main__":
+    main()

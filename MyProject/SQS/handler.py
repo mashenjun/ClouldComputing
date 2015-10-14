@@ -1,7 +1,11 @@
+import sys,os
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from boto3.session import Session
 from configFile.instanceConfig import Config
 
+from Logger.custome_logger import get_logger
 config = Config()
+logger = get_logger("SQS.handler")
 ACCESS_KEY_ID = config.ConfigSectionMap()["aws_access_key_id"]
 SECRET_ACCESS_KEY = config.ConfigSectionMap()["aws_secret_access_key"]
 VISIBILITY_TIME = config.ConfigSectionMap()["visibility_time"]
@@ -19,7 +23,6 @@ def connect_to_sqs():
 
 def receive_msg(client, queue):
     msg = client.receive_message(QueueUrl=queue.url)
-    change_visibility(client,queue,msg,10)
     return msg
 
 def receive_multi_msg(client, queue, num):

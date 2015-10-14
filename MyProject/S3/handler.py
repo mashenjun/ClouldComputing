@@ -8,14 +8,14 @@ from Logger import custome_logger
 import SQS.handler as SQS_handler
 # function used to deal with the S3 storage
 config = Config()
-
+pirpath = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
 S3_ACCESS_KEY = config.ConfigSectionMap()["aws_access_key_id"]
 S3_SECRET_KEY = config.ConfigSectionMap()["aws_secret_access_key"]
 REGION_HOST = 's3.eu-central-1.amazonaws.com'
 INPUT_FOLDER = "input"
 OUTPUT_FOLDER = "output"
-LOCAL_IMG = "images"
-LOCAL_RESULT = "imageResult"
+LOCAL_IMG = join(pirpath,"images")
+LOCAL_RESULT = join(pirpath,"imageResult")
 logger = custome_logger.get_logger(__name__)
 ERROR_STR = """Error removing %(path)s, %(error)s """
 

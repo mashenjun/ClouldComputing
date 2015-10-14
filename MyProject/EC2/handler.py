@@ -35,6 +35,9 @@ def create_instance(ec2,numberofinstance):
     NetworkInterfaces=[{'DeviceIndex':0,'AssociatePublicIpAddress':True},])
     return instance
 
+#def create_instance_from_image(ec2, ):
+
+
 def get_InstanceId(instance):
     instanceId=instance[0]._id
     return instanceId
@@ -52,8 +55,12 @@ def stop_instance(client,instanceId):
     response=client.stop_instances(InstanceIds=[instanceId])
     return response
 
-def get_instance_num(ec2, ):
-    instances = ec2.instances.filter()
+def get_instance_num(ec2, running):
+    if running == False:
+        instances = ec2.instances.filter()
+    else :
+        instances = ec2.instances.filter(
+            Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
     return list(instances)
 
 # instanceid is list

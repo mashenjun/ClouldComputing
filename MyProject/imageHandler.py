@@ -31,6 +31,17 @@ def delet_result():
         except Exception, e:
             print e
 
+def delet_input():
+    folder = join(MODULE_PATH,IMAGE_FOLDER)
+    for the_file in os.listdir(folder):
+        file_path = os.path.join(folder, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            #elif os.path.isdir(file_path): shutil.rmtree(file_path)
+        except Exception, e:
+            print e
+
 def read_image_to_string(imagename):
     img = read_image(imagename)
     im_string = cPickle.dumps(img)

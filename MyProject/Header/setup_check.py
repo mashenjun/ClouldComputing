@@ -14,7 +14,7 @@ import Static.static_create as create_static
 ec2, ec2_client = EC2Handler.connect_ec2()
 instance_num = EC2Handler.get_instance_num(ec2)
 if instance_num < 0:
-    EC2Handler.
+    print()
 
 # check sqs
 # check s3
