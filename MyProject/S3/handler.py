@@ -45,13 +45,13 @@ def check_localfolder(folder_name, file_name):
 
 
 def upload_file(conn_s3, name, path_to_result, filename):
-    bucket = conn_s3.get_bucket(config.ConfigSectionMap()["s3_bucket_name"]);
+    bucket = conn_s3.get_bucket(config.ConfigSectionMap()["s3_bucket_name"])
     key = bucket.new_key(join(INPUT_FOLDER, name, filename))
     key.set_contents_from_filename(path_to_result)
     key.set_acl('public-read')
 
 def upload_file_memeory(conn_s3, name, filename, img_array):
-    bucket = conn_s3.get_bucket(config.ConfigSectionMap()["s3_bucket_name"]);
+    bucket = conn_s3.get_bucket(config.ConfigSectionMap()["s3_bucket_name"])
     key = bucket.new_key(join(INPUT_FOLDER, name, filename))
     key.set_contents_from_string(img_array)
     key.set_acl('public-read')
@@ -134,3 +134,16 @@ def clear_local_folder():
     path_to_output = join(path, LOCAL_RESULT)
     removeall(path_to_input)
     removeall(path_to_output)
+
+def delete_output(conn_s3,name):
+    bucket = conn_s3.get_bucket(config.ConfigSectionMap()["s3_bucket_name"],validate=False)
+    bucketListResultSet = bucket.list(prefix="output/"+name)
+    result = bucket.delete_keys([key.name for key in bucketListResultSet])
+    return result
+
+def delete_input(conn_s3,name):
+    bucket = conn_s3.get_bucket(config.ConfigSectionMap()["s3_bucket_name"],validate=False)
+    bucketListResultSet = bucket.list(prefix="input/"+name)
+    result = bucket.delete_keys([key.name for key in bucketListResultSet])
+    return result    
+    
