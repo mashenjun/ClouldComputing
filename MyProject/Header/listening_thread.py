@@ -3,23 +3,24 @@ __author__ = 'yunlu'
 import sys,os.path
 import threading
 import time
+
 #import static
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-
+from configFile import Config()
 from SQS import handler as SQSHandler
 #import Static.static_create as create_static
 #import Static.static_handler as Shandler
 
 #create_static()
+OUTPUT_QUEUE =
 
-sqs = SQSHandler.connect_to_sqs()
-client= SQSHandler.get_client()
-queue=SQSHandler.get_queue(sqs,'TestSQS')
+
 
 exitFlag = 0
 dict={'a': 3, 'b': 2}
 
-def listening(threadName, delay):
+def listening(threadName, sqs,client, delay ):
+    queue=SQSHandler.get_queue(sqs,'TestSQS')
     while True:
         if exitFlag:
             threadName.exit()
@@ -63,7 +64,6 @@ thread1 = listen_thread(1, "Thread-1")
 thread1.start()
 
 
-print "Exiting Main Thread"
 
 
 

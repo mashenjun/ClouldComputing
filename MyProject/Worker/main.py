@@ -15,7 +15,7 @@ logger = custome_logger.get_logger(__name__)
 conn_s3 = S3_handler.connect_to_S3()
 conn_sqs = SQS_handler.connect_to_sqs()
 
-QUEUE_NAME = config.ConfigSectionMap()["sqs_input_queue"]
+QUEUE_NAME = config.ConfigSectionMap()["sqs_output_queue"]
 #Create a msg in the TestSQS queue
 #create_msg(sqs,'TestSQS','AHAHAH')
 #receive the msg and print out the Body
