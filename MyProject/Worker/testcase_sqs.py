@@ -7,12 +7,11 @@ from SQS import handler as SQSHander
 """
 Call
 """
-sqs=SQSHander.connect_to_sqs()
+sqs,client =SQSHander.connect_sqs()
 #Create a msg in the TestSQS queue
 #create_msg(sqs,'TestSQS','AHAHAH')
 
 #receive the msg and print out the Body
-client= SQSHander.get_client()
 queue=SQSHander.get_queue(sqs,'Test')
 msg=SQSHander.receive_msg(client,queue)
 SQSHander.response(msg)

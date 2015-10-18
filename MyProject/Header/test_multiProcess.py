@@ -1,8 +1,9 @@
 __author__ = 'mashenjun'
-
+import sys,os.path
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from multiprocessing import Process, Value
 import time
-import static
+import Static.static
 
 def f(n):
     while 1:

@@ -4,14 +4,19 @@ Created on Thu Oct  8 06:11:53 2015
 
 @author: yun
 """
+import sys, os
 from boto3.session import Session
 from configFile.instanceConfig import Config
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from Logger import custome_logger
 
+logger = custome_logger.get_logger("EC2.handler")
 config = Config()
 ACCESS_KEY_ID = config.ConfigSectionMap()["aws_access_key_id"]
 SECRET_ACCESS_KEY = config.ConfigSectionMap()["aws_secret_access_key"]
 VISIBILITY_TIME = config.ConfigSectionMap()["visibility_time"]
-REGION_NAME = 'eu-central-1'
+REGION_NAME = config.ConfigSectionMap()["region"]
+AMI = config.ConfigSectionMap()["ami"]
 
 session = Session(aws_access_key_id=ACCESS_KEY_ID,
                   aws_secret_access_key=SECRET_ACCESS_KEY,
@@ -30,21 +35,22 @@ def connect_ec2():
     return (ec2,client)
 
 def create_instance(ec2,numberofinstance):
-    instance=ec2.create_instances(ImageId='ami-accff2b1',MinCount=1,MaxCount=numberofinstance,
+    instances=ec2.create_instances(ImageId=AMI,MinCount=1,MaxCount=numberofinstance,
     KeyName='mashenjun',InstanceType='t2.micro',Monitoring={'Enabled':True},
     NetworkInterfaces=[{'DeviceIndex':0,'AssociatePublicIpAddress':True},])
-    return instance
+    return instances
 
-#def create_instance_from_image(ec2, ):
+def create_instance_from_image(ec2,numberofinstance ):
+    instances = ec2.create_instances(ImageId=AMI,MinCount=1,MaxCount=numberofinstance,
+    KeyName='mashenjun',InstanceType='t2.micro',Monitoring={'Enabled':True},
+    NetworkInterfaces=[{'DeviceIndex':0,'AssociatePublicIpAddress':True},])
+    return instances
 
 
-def get_InstanceId(instance):
-    instanceId=instance[0]._id
-    return instanceId
+def get_instanceId(instances):
+    instanceIds = [r._id for r in instances]
+    return instanceIds
 
-def get_instance(conn,instance_id):
-    instance=conn.get_all_instances(instance_ids=[instance_id])[0].instances[0]
-    return instance
 
 def set_key_name(ec2,instanceId,key,value):
     response=ec2.create_tags(Resources=[instanceId,],Tags=[{'Key':key,'Value':value},])
@@ -69,8 +75,17 @@ def get_instance_num(ec2, running):
 
 # instanceid is list
 def get_instance_status(ec2,instanceid):
-    return ec2.meta.client.describe_instance_status(InstanceIds =instanceid)['InstanceStatuses']
+    return ec2.meta.client.describe_instance_status(InstanceIds =[instanceid])['InstanceStatuses']
 
+def get_instance_worker(ec2):
+    instances = ec2.instances.filter(
+            Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]}])
+    return list(instances)
+
+def get_instance_running_worker(ec2):
+    instances = ec2.instances.filter(
+            Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]},{'Name': 'instance-state-name', 'Values': ['running']}])
+    return list(instances)
 
 
 """
@@ -79,7 +94,7 @@ Application
 def main():
     ec2=get_resource()
     instance=create_instance(ec2,1)
-    instanceId=get_InstanceId(instance)
+    instanceId=get_instanceId(instance)
     set_key_name(ec2,instanceId,'Name','Worker4')
     client=get_client()
 

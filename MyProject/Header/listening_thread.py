@@ -3,17 +3,15 @@ __author__ = 'mashenjun'
 import sys,os.path
 import threading
 import time
-import static
+
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from SQS import handler as SQSHander
 import Static.static_create as create_static
-import Static.static_handler as Shandler
 
-create_static()
+create_static.create_static_data()
 
-sqs = SQSHander.get_service_resource()
-client= SQSHander.get_client()
+sqs,client = SQSHander.connect_sqs()
 queue=SQSHander.get_queue(sqs,'TestSQS')
 
 exitFlag = 0
@@ -24,6 +22,7 @@ def listening(threadName, delay, list_idle, list_busy):
             threadName.exit()
         time.sleep(delay)
         msg_list =SQSHander.receive_multi_msg(client,queue,10)
+
 
 class myThread (threading.Thread):
     def __init__(self, threadID, name,list_idle,list_busy):

@@ -10,5 +10,9 @@ from configFile.instanceConfig import Config
 
 config = Config()
 logger = custome_logger.get_logger(__name__)
+KEY_PATH = config.ConfigSectionMap()["path_to_key"]
 
-ec2 = EC2handler.connect_ec2()
+instance = EC2cmd.get_instance("i-6c77a1d0")
+ssh_client = EC2cmd.ssh_to_instance(instance,KEY_PATH)
+status,stdout,stderr=EC2cmd.ssh_run_command(ssh_client,"python /home/ubuntu/MyProject/Worker/main.py")
+print (stderr)

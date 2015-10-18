@@ -96,6 +96,7 @@ def process_image(file_name):
     imResult2 = recreate_image(codebook_random, labels_random, w, h)
     save_image(imResult2,result2)
     # Display all results, alongside original image
+    """
     plt.figure(1)
     plt.clf()
     ax = plt.axes([0, 0, 1, 1])
@@ -117,7 +118,7 @@ def process_image(file_name):
     plt.title('Quantized image (64 colors, Random)')
     plt.imshow(imResult2)
     plt.show()
-
+    """
 
 def process_image_memory(img_array):
 

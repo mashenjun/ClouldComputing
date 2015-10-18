@@ -3,5 +3,6 @@
 *.pyc
 *.class
 *.jpg
+*.config
 AWSExample/
 Examples/

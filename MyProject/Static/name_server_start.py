@@ -3,7 +3,7 @@ from multiprocessing import Process
 import Pyro4
 
 def start():
-    NS = Pyro4.naming.startNSloop()
+    Pyro4.naming.startNSloop()
 
 def start_name_server():
     p = Process(target=start, args=())

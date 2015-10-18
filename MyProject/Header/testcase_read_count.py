@@ -11,8 +11,8 @@ from SQS import handler as SQS_handler
 
 logger = custome_logger.get_logger(__name__)
 config = Config()
-BUCKET_NAME = config.ConfigSectionMap()["bucket_name"]
-conn_SQS = SQS_handler.connect_to_sqs()
+BUCKET_NAME = "TestSQS2"
+conn_SQS,client = SQS_handler.connect_sqs()
 queue = SQS_handler.get_queue(conn_SQS,BUCKET_NAME)
 count = SQS_handler.get_queue_count(queue)
 logger.info(count)
