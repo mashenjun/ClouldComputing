@@ -6,21 +6,24 @@ import time
 
 #import static
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from configFile import Config()
+from configFile.instanceConfig import Config
 from SQS import handler as SQSHandler
+import Pyro4
 #import Static.static_create as create_static
 #import Static.static_handler as Shandler
 
 #create_static()
-OUTPUT_QUEUE =
-
+config = Config()
+OUTPUT_QUEUE = config.ConfigSectionMap()["sqs_output_queue"]
+REMOTE_STORAGE_NAME = "PYRONAME"+config.ConfigSectionMap()["remote_storage_name"]
 
 
 exitFlag = 0
-dict={'a': 3, 'b': 2}
 
-def listening(threadName, sqs,client, delay ):
-    queue=SQSHandler.get_queue(sqs,'TestSQS')
+
+def listening(threadName, sqs,client, delay,static ):
+
+    queue = SQSHandler.get_queue(sqs, OUTPUT_QUEUE)
     while True:
         if exitFlag:
             threadName.exit()
@@ -29,11 +32,11 @@ def listening(threadName, sqs,client, delay ):
         if (len(msg)>1):
             user=SQSHandler.response(msg)
             print user
-            dict[user]=dict[user]-1
+            static.minus_task(user)
             print dict
-            if (dict[user]==0):
+            if (static.get_task_value[user]==0):
                 print "user %s could fetch now " % user
-                user_t = fetch_data(wait_finish,user)
+                user_t = fetch_data(wait_finish,user) #url
         else:
             print "No msg now"
             time.sleep(3*delay)
@@ -50,6 +53,7 @@ class listen_thread(threading.Thread):
         listening(self.name, 1)
           
 class fetch_data(threading.Thread):
+    #url
     def __init__(self, t, *args):
         threading.Thread.__init__(self, target=t, args=args)
         self.start()
