@@ -2,7 +2,6 @@ __author__ = 'mashenjun'
 import sys,os.path
 import threading
 import time
-import static
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from SQS import handler as SQSHandler
@@ -11,6 +10,7 @@ from S3 import handler as S3Handler
 from configFile.instanceConfig import Config
 import Pyro4
 from multiprocessing.pool import ThreadPool
+import listening_thread
 import time
 
 config = Config()
@@ -28,7 +28,7 @@ def ec2_init():
     ec2, ec2_client = EC2Handler.connect_ec2()
     instance_num = EC2Handler.get_instance_num(ec2,False)
     workers = EC2Handler.get_instance_running_worker(ec2)
-    static.add_to_idle.append(EC2Handler.get_instanceId(workers))
+    static.add_to_idle(EC2Handler.get_instanceId(workers))
     if len(workers) < 2:
     # create instance from images
     # store the instance id
@@ -37,7 +37,7 @@ def ec2_init():
             counter = 0;
             EC2Handler.set_key_name(ec2,i._id,"Name","Worker"+str(counter+len(workers)))
             counter += counter
-            static.add_to_idle.append(i._id)
+            static.add_to_idle(i._id)
     global finish
     finish +=1
     return (ec2,ec2_client)
@@ -75,6 +75,12 @@ s3 = result3.get()
 # start the threads to listen the queue
 while finish<3:
     time.sleep(1)
+
+listening_thread.create_run_listener(sqs,sqs_client,static)
+
+
+
+
 
 
 

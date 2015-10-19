@@ -8,6 +8,7 @@ import time
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from configFile.instanceConfig import Config
 from SQS import handler as SQSHandler
+from SQS import message_process
 import Pyro4
 #import Static.static_create as create_static
 #import Static.static_handler as Shandler
@@ -30,13 +31,15 @@ def listening(threadName, sqs,client, delay,static ):
         time.sleep(delay)
         msg=SQSHandler.receive_multi_msg(client, queue, 1) 
         if (len(msg)>1):
-            user=SQSHandler.response(msg)
+            msg_content=SQSHandler.response(msg)
+            user = message_process.message_getusername(msg_content)
+            instanceID = message_process.message_gerid(msg_content)
             print user
             static.minus_task(user)
-            print dict
+            static.move_to_idle(instanceID)
             if (static.get_task_value[user]==0):
                 print "user %s could fetch now " % user
-                user_t = fetch_data(wait_finish,user) #url
+                #user_t = fetch_data(wait_finish,user) #url
         else:
             print "No msg now"
             time.sleep(3*delay)
@@ -44,13 +47,15 @@ def listening(threadName, sqs,client, delay,static ):
         
 
 class listen_thread(threading.Thread):
-    def __init__(self, threadID, name):
+    def __init__(self, threadID, name, sqs, client, static):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
-
+        self.sqs = sqs
+        self.client = client
+        self.static = static
     def run(self):
-        listening(self.name, 1)
+        listening(self.name,self.sqs, self.client,1,self.static)
           
 class fetch_data(threading.Thread):
     #url
@@ -61,11 +66,11 @@ class fetch_data(threading.Thread):
 def wait_finish(user):
     time.sleep(5) 
     print "user %s is finished now " % user         
-# Create new threads
-thread1 = listen_thread(1, "Thread-1")
 
-# Start new Threads
-thread1.start()
+def create_run_listener(sqs,client,static):
+    thread1 = listen_thread(1, "listener",sqs,client,static)
+    # Start new Threads
+    thread1.start()
 
 
 

@@ -71,6 +71,7 @@ def response(msg):
     msgBody = msg["Messages"][0]["Body"]
     return msgBody
 
+
 def delete_msg(client, msg, queue):
     msgHandle = msg["Messages"][0]["ReceiptHandle"]
     response = client.delete_message(QueueUrl=queue.url, ReceiptHandle=msgHandle)

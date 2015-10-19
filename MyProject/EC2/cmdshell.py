@@ -34,8 +34,8 @@ def get_instance(instance_id):
     return instance
 
 
-def ssh_to_instance(instance,key_path):
-    ssh_client=sshclient_from_instance(instance,ssh_key_file=key_path,user_name='ubuntu')
+def ssh_to_instance(instance):
+    ssh_client=sshclient_from_instance(instance,ssh_key_file=KEY_PATH,user_name='ubuntu')
     return ssh_client
     
 def ssh_run_command(ssh_client,str_command):

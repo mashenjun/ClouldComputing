@@ -37,10 +37,21 @@ class data_storage(object):
         self.idle_list.remove(item)
         #print ("remove" + str(len(self.idle_list)))
 
+    def move_to_idle(self,item):
+        self.add_to_idle(item)
+        self.remove_from_busy(item)
+
+    def move_to_busy(self,item):
+        self.add_to_busy(item)
+        self.remove_from_idle(item)
+
     def add_task(self,name):
         self.task[name]+=1
 
     def minus_task(self,name):
         self.task[name]-=1
+
+    def insert_new_task(self, name,num):
+        self.task.update({name: num})
 
 
