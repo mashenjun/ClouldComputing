@@ -54,12 +54,16 @@ def check_queue_exist(list):
         return 2
 
 def receive_msg(client, queue):
-    msg = client.receive_message(QueueUrl=queue.url)
+    msg = client.receive_mpytessage(QueueUrl=queue.url)
+    if len(msg)>1:
+        change_visibility(client,queue,msg,10)
     return msg
 
 def receive_multi_msg(client, queue, num):
     msg = client.receive_message(QueueUrl=queue.url, MaxNumberOfMessages=num)
-    change_visibility(client,queue,msg,10)
+    logger.debug(str(dir(msg))+"===="+str(msg))
+    if len(msg)>1:
+        change_visibility(client,queue,msg,10)
     return msg
 
 def create_msg(sqs, queueName, msg):

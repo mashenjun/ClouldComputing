@@ -21,21 +21,21 @@ class data_storage(object):
     def get_sum(self):
         return len(self.idle_list)+len(self.busy_list)
 
-    def add_to_idle(self, name, item):
+    def add_to_idle(self, item):
         self.idle_list.append(item)
-        #print ("add" + str(len(self.idle_list)))
+        print ("add to idle" + str(self.idle_list))
 
-    def remove_from_idle(self, name ,item):
+    def remove_from_idle(self, item):
         self.idle_list.remove(item)
-        #print ("remove" + str(len(self.idle_list)))
+        print ("remove from idle" + str(self.idle_list))
 
-    def add_to_busy(self, name, item):
+    def add_to_busy(self, item):
         self.idle_list.append(item)
-        #print ("add" + str(len(self.idle_list)))
+        print ("add to busy" + str(self.idle_list))
 
-    def remove_from_busy(self, name ,item):
+    def remove_from_busy(self,item):
         self.idle_list.remove(item)
-        #print ("remove" + str(len(self.idle_list)))
+        print ("remove from busy" + str(self.idle_list))
 
     def move_to_idle(self,item):
         self.add_to_idle(item)

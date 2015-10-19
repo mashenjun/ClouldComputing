@@ -10,13 +10,13 @@ class Person(object):
     def get_idle(self, static):
         return static.get_idle()
 
-    def add_idle(self, static,):
+    def add_idle(self, static):
         item = input("Type a thing you want to store (or empty): ").strip()
-        static.add_to_idle(self.name, item)
+        static.add_to_idle( item)
 
-    def remove_idle(self, static,):
+    def remove_idle(self, static):
         item = input("Type something you want to take (or empty): ").strip()
-        static.remove_from_idle(self.name, item)
+        static.remove_from_idle( item)
 
 
 # test

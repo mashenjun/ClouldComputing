@@ -13,14 +13,16 @@ from multiprocessing.pool import ThreadPool
 import listening_thread
 import time
 import submit
+from Logger.custome_logger import get_logger
 
 config = Config()
+logger = get_logger("setup_check")
 INPUT_QUEUE = config.ConfigSectionMap()["sqs_input_queue"]
 OUTPUT_QUEUE = config.ConfigSectionMap()["sqs_output_queue"]
 REMOTE_STORAGE_NAME = "PYRONAME"+config.ConfigSectionMap()["remote_storage_name"]
 
 static = Pyro4.Proxy("PYRONAME:example.data_storage")
-pool = ThreadPool(process=3)
+pool = ThreadPool(processes=3)
 finish = 0
 # check the instance pool and setup system
 # check instance number
@@ -35,7 +37,7 @@ def ec2_init():
     # store the instance id
         instances = EC2Handler.create_instance_from_image(ec2,2-len(workers))
         for i in instances:
-            counter = 0;
+            counter = len(workers)
             EC2Handler.set_key_name(ec2,i._id,"Name","Worker"+str(counter+len(workers)))
             counter += counter
             static.add_to_idle(i._id)
@@ -69,6 +71,7 @@ ec2,ec2_client = result1.get()
 sqs, sqs_client = result2.get()
 s3 = result3.get()
 
+logger.debug(ec2,ec2_client,sqs,sqs_client,s3)
 # check sqs
 
 # check s3 check the bucket cloud-compute
@@ -78,6 +81,7 @@ while finish<3:
     time.sleep(1)
 
 listening_thread.create_run_listener(sqs,sqs_client,static)
+
 submit.start_submit(1)
 
 
