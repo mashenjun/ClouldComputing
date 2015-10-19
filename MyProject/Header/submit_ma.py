@@ -25,6 +25,6 @@ while static.get_task_value(sys.argv[1])!=0:
     time.sleep(1)
     print(".")
 
-print("task finish .... ")
+print("the task is finished .....")
 
 
