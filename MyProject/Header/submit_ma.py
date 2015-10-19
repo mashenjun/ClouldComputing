@@ -10,7 +10,6 @@ import S3.handler as s3h
 import SQS.handler as sqsh
 
 static = Pyro4.Proxy("PYRONAME:example.data_storage")
-thread1 = threading.Thread(target=s3h.,args=)
 instanceid = static.get_idle[0]
 ec2cmd.remove_from_idle(instanceid)
 instance = ec2cmd.get_instance(instanceid)

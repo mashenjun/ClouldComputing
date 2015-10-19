@@ -11,11 +11,16 @@ from EC2 import handler as EC2_handler
 from dirtools import Dir, DirState
 import threading
 import time
-TIME_TO_CHECK=3
-state_file=0
-no_hit=0
+
+state_file = 0
+no_hit = 0
 logger = custome_logger.get_logger(__name__)
 config = Config()
+
+
+d = S3_handler.set_dir_for_state()
+dir_state = DirState(d)
+state_file = dir_state.to_json()
 
 class thread(threading.Thread):
     def __init__(self, t, *args):
@@ -43,15 +48,13 @@ def update_changes_thread(ite_time):
             time.sleep(ite_time) 
         else:
             time.sleep(2*ite_time)
-            global no_hit
-            no_hit+=1
-            if (no_hit==5):
-                break
+            #global no_hit
+            #no_hit+=1
+            #if (no_hit==5):
+            #    break
         
-        
+
+def start_submit(time_to_check):
 #initial
-d=S3_handler.set_dir_for_state()
-dir_state = DirState(d)
-state_file = dir_state.to_json()
-#start the thread
-submit_thread = thread(update_changes_thread, TIME_TO_CHECK)    
+    #start the thread
+    submit_thread = thread(update_changes_thread, time_to_check)

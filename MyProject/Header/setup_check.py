@@ -12,6 +12,7 @@ import Pyro4
 from multiprocessing.pool import ThreadPool
 import listening_thread
 import time
+import submit
 
 config = Config()
 INPUT_QUEUE = config.ConfigSectionMap()["sqs_input_queue"]
@@ -54,7 +55,7 @@ def sqs_init():
     return (sqs, sqs_client)
 
 def s3_init():
-    s3 = S3Handler.connect_S3()
+    s3 = S3Handler.connect_to_S3()
     S3Handler.create_bucket(s3)
     global finish
     finish +=1
@@ -77,8 +78,7 @@ while finish<3:
     time.sleep(1)
 
 listening_thread.create_run_listener(sqs,sqs_client,static)
-
-
+submit.start_submit(1)
 
 
 
