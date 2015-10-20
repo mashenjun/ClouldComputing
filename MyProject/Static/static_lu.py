@@ -40,6 +40,13 @@ class data_storage(object):
         user_dict = self.details[user_name]
         user_dict[file_name]=instance_id
         return self.details
+        
+    def delete_task_in_dict(self,new_file,instance_id):
+        user_name = new_file.split('/')[0]
+        file_name = new_file.split('/')[1]  
+        user_dict = self.details[user_name]
+        del user_dict[file_name]
+        return self.details
 
     def add_to_idle(self,item):
         self.idle_list.append(item)
