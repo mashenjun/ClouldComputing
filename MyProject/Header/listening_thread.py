@@ -9,12 +9,14 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from configFile.instanceConfig import Config
 from SQS import handler as SQSHandler
 from SQS import message_process
+from Logger.custome_logger import get_logger
 import Pyro4
 #import Static.static_create as create_static
 #import Static.static_handler as Shandler
 
 #create_static()
 config = Config()
+logger = get_logger(__file__)
 OUTPUT_QUEUE = config.ConfigSectionMap()["sqs_output_queue"]
 REMOTE_STORAGE_NAME = "PYRONAME"+config.ConfigSectionMap()["remote_storage_name"]
 
@@ -29,15 +31,17 @@ def listening(threadName, sqs,client, delay,static ):
         if exitFlag:
             threadName.exit()
         time.sleep(delay)
-        msg=SQSHandler.receive_multi_msg(client, queue, 1) 
+        msg=SQSHandler.receive_multi_msg(client, queue, 1)
+
         if (len(msg)>1):
             msg_content=SQSHandler.response(msg)
             user = message_process.message_getusername(msg_content)
             instanceID = message_process.message_gerid(msg_content)
-            print user
+            logger.debug("reveive a message in output queue with "+user)
             static.minus_task(user)
             static.move_to_idle(instanceID)
-            if (static.get_task_value[user]==0):
+            SQSHandler.delete_msg(client,msg,queue)
+            if (static.get_task_value(user)==0):
                 print "user %s could fetch now " % user
                 #user_t = fetch_data(wait_finish,user) #url
         else:

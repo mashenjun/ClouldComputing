@@ -87,7 +87,7 @@ def get_file(conn_s3, name, file_name):
             join(INPUT_FOLDER, name, file_name))
         key.get_contents_to_filename(LOCAL_IMG + '/' + file_name)
     else:
-        logger.info(file_name + " already exists")
+        logger.info(file_name + "already exists")
 
 
 def send_file(conn_s3, name):
@@ -121,6 +121,7 @@ def send_files_head(list_of_files):
 def set_dir_for_state():
     path = os.path.join(os.path.dirname(__file__), os.path.pardir)
     path_to_folder = join(path, LOCAL_IMG)
+    logger.debug(path_to_folder)
     d = Dir(path_to_folder)
     #can add exclude file hire
     #d = Dir('/path/to/dir', exclude_file='.gitignore')

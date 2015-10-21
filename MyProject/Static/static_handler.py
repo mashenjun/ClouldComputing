@@ -22,7 +22,7 @@ class Person(object):
 # test
 #uri = input("Enter the uri of the warehouse: ").strip()
 def main():
-    static = Pyro4.Proxy("PYRONAME:example.data_storage")
+    static = Pyro4.Proxy("PYRONAME:example.data_storage@192.168.174.134:9999")
     janet = Person("Janet")
     janet.add_idle(static)
     print(janet.get_idle(static))

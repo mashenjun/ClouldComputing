@@ -21,7 +21,7 @@ INPUT_QUEUE = config.ConfigSectionMap()["sqs_input_queue"]
 OUTPUT_QUEUE = config.ConfigSectionMap()["sqs_output_queue"]
 REMOTE_STORAGE_NAME = "PYRONAME"+config.ConfigSectionMap()["remote_storage_name"]
 
-static = Pyro4.Proxy("PYRONAME:example.data_storage")
+static = Pyro4.Proxy("PYRONAME:example.data_storage@192.168.174.134:9999")
 pool = ThreadPool(processes=3)
 finish = 0
 # check the instance pool and setup system
@@ -71,7 +71,9 @@ ec2,ec2_client = result1.get()
 sqs, sqs_client = result2.get()
 s3 = result3.get()
 
-logger.debug(ec2,ec2_client,sqs,sqs_client,s3)
+logger.debug("check complete")
+# the above is ok
+
 # check sqs
 
 # check s3 check the bucket cloud-compute

@@ -6,12 +6,15 @@ from multiprocessing import Process, Value
 
 def create_static_data():
     name_server_start.start_name_server()
+    print("1")
     data = static.data_storage()
-    daemon = Pyro4.Daemon()
-    data_storage_uri = daemon.register(data)
     ns = Pyro4.locateNS()
+    print("2")
+    daemon = Pyro4.Daemon()
+    print("3")
+    data_storage_uri = daemon.register(data)
     ns.register("example.data_storage",data_storage_uri)
-    print("0909090909")
+    print("4")
     daemon.requestLoop()
 
 

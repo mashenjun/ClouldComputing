@@ -5,6 +5,7 @@ Created on Thu Oct  8 06:11:53 2015
 @author: yun
 """
 import sys, os
+import boto.utils
 from boto3.session import Session
 from configFile.instanceConfig import Config
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
@@ -86,6 +87,19 @@ def get_instance_running_worker(ec2):
     instances = ec2.instances.filter(
             Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]},{'Name': 'instance-state-name', 'Values': ['running']}])
     return list(instances)
+
+def get_instance_stopped_worker(ec2):
+    instances = ec2.instances.filter(
+            Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]},{'Name': 'instance-state-name', 'Values': ['stopped']}])
+    return list(instances)
+
+def get_local_instanceId():
+    region = boto.utils.get_instance_metadata()
+    return region["instance-id"]
+
+def get_local_ipv4():
+    region = boto.utils.get_instance_metadata()
+    return region["local-ipv4"]
 
 
 """

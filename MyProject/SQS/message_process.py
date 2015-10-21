@@ -9,3 +9,6 @@ def message_getusername(message):
 
 def message_gerid(message):
     return message.split("@")[1]
+
+def message_getip(message):
+    return message.split("#")[1]

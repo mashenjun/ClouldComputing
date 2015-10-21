@@ -18,6 +18,10 @@ KEY_PATH = config.ConfigSectionMap()["path_to_key"]
 EC2_ACCESS_KEY = config.ConfigSectionMap()["aws_access_key_id"]
 EC2_SECRET_KEY = config.ConfigSectionMap()["aws_secret_access_key"]
 REGION = "eu-central-1"
+
+path = os.path.join(os.path.dirname(__file__), os.path.pardir)
+KEY_PATH = os.path.join(path, "mashenjun.pem")
+
 #conn=boto.ec2.connect_to_region("eu-central-1")
 #instance=conn.get_all_instances(instance_ids=['i-804dfb41'])[0].instances[0]
 #ssh_client=sshclient_from_instance(instance,ssh_key_file='/home/yun/Documents/Cloudcomputing/mashenjun.pem',user_name='ubuntu')

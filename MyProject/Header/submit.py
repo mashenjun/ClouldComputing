@@ -14,11 +14,12 @@ import time
 
 state_file = 0
 no_hit = 0
-logger = custome_logger.get_logger(__name__)
+logger = custome_logger.get_logger(__file__)
 config = Config()
 
 
 d = S3_handler.set_dir_for_state()
+logger.debug(d)
 dir_state = DirState(d)
 state_file = dir_state.to_json()
 
@@ -30,12 +31,16 @@ class thread(threading.Thread):
 def update_changes_thread(ite_time):
     while(1):
         global state_file
+        global old_state_file
         dir_state = DirState.from_json(state_file)
         dir_state2 = DirState(d)
         changes = dir_state2 - dir_state
         print changes
+        print(dir_state)
+        print(dir_state2)
         #update the changes (no thread)
         new_files=changes["created"]
+        deleted_files = changes["deleted"]
         print ("the new files are %s" % new_files)
         print (len(new_files))
         if (len(new_files)>0):
@@ -44,17 +49,26 @@ def update_changes_thread(ite_time):
             #delete the files (no thread) (ignore at first)
             #change the json file
             global state_file
+            global old_state_file
+            old_state_file = state_file
             state_file = dir_state2.to_json()
-            time.sleep(ite_time) 
+            os.remove(old_state_file)
+            time.sleep(ite_time)
+        elif(len(deleted_files)>0):
+            global state_file
+            global old_state_file
+            old_state_file = state_file
+            state_file = dir_state2.to_json()
+            os.remove(old_state_file)
         else:
             time.sleep(2*ite_time)
             #global no_hit
             #no_hit+=1
-            #if (no_hit==5):
+            #if (no_hit==10):
             #    break
         
 
 def start_submit(time_to_check):
 #initial
     #start the thread
-    submit_thread = thread(update_changes_thread, time_to_check)
+    thread(update_changes_thread, time_to_check)
