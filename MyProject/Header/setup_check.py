@@ -13,7 +13,6 @@ from multiprocessing.pool import ThreadPool
 import listening_thread
 import time
 import Auto_send_file
-import Auto_send_message
 from Logger.custome_logger import get_logger
 
 
@@ -32,6 +31,12 @@ finish = 0
 def ec2_init():
     ec2, ec2_client = EC2Handler.connect_ec2()
     instance_num = EC2Handler.get_instance_num(ec2,False)
+    stopped_workers = EC2Handler.get_instance_stopped_worker(ec2)
+    if (len(stopped_workers)>0):
+        stopped_ID = EC2Handler.get_instanceId(stopped_workers)
+        for item in stopped_ID:
+            EC2Handler.start_instance(ec2_client,item)
+
     workers = EC2Handler.get_instance_running_worker(ec2)
     static.add_to_idle(EC2Handler.get_instanceId(workers))
     if len(workers) < 2:
@@ -88,7 +93,6 @@ listening_thread.create_run_listener(sqs,sqs_client,static)
 
 Auto_send_file.start_submit(1,sqs)
 
-Auto_send_message.start_submit(1)
 
 
 

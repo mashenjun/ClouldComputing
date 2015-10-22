@@ -21,7 +21,7 @@ def insert_new_job(new_files):
     #refresh the task queue
     for user in return_all_users():
         static.insert_new_task(user,return_users_tasks(user))
-        LOCAL_QUEUE[user]['Deadline'] = deadline.deadline(LOCAL_QUEUE[user]['Counter'])
+        LOCAL_QUEUE[user]['Deadline'] = deadline.deadline(LOCAL_QUEUE[user]['Counter'],static)
     print "the task dict is: "
     print static.get_task()
     #result = [insert_new_job(p, p) for p in new_files]

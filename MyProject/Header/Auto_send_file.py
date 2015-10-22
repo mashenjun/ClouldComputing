@@ -57,7 +57,7 @@ def update_changes_thread(ite_time,sqs):
             logger.debug(scheduler.LOCAL_QUEUE)
             
             #invoke the scheduler and send the msg into sqs
-            scheduler.send_message_to_sqs(sqs)
+            #scheduler.send_message_to_sqs(sqs)
             time.sleep(ite_time)
         elif(len(deleted_files)>0):
 

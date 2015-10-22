@@ -34,22 +34,9 @@ IMAGE_RESULT_FOLDER = "imageResult"
 
 MODULE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
 
-mypath = join(MODULE_PATH,IMAGE_FOLDER,sys.argv[1])
-logger.debug("mypath is "+ mypath)
-#LOCALIP = ec2h.get_local_ipv4()
 
 static = Pyro4.Proxy("PYRONAME:example.data_storage@192.168.174.134:9999")
-sqs,sqs_client = sqsh.connect_sqs()
-static.insert_new_task(sys.argv[1],int(sys.argv[2]))
-onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath,f))]
-logger.debug(mypath)
-logger.debug("onlyfiles"+str(len(onlyfiles)))
-for item in onlyfiles:
-    instanceid = static.get_idle()[0]
-    static.remove_from_idle(instanceid)
-    static.add_to_busy(instanceid)
-    #sqsh.create_msg(sqs,"input",item+"#"+str(LOCALIP))
-    thread(tell_worker_to_run, instanceid)
+
 
 
 while static.get_task_value(sys.argv[1])!=0:
