@@ -10,6 +10,7 @@ from boto3.session import Session
 from configFile.instanceConfig import Config
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from Logger import custome_logger
+import static
 
 logger = custome_logger.get_logger("EC2.handler")
 config = Config()
@@ -45,6 +46,10 @@ def create_instance_from_image(ec2,numberofinstance ):
     instances = ec2.create_instances(ImageId=AMI,MinCount=1,MaxCount=numberofinstance,
     KeyName='mashenjun',InstanceType='t2.micro',Monitoring={'Enabled':True},
     NetworkInterfaces=[{'DeviceIndex':0,'AssociatePublicIpAddress':True},])
+    #get instanceIds list 
+    instanceIds = get_instanceId(instances)
+    #add the Ids list to the idle list
+    static.get_idle().append(instanceIds)
     return instances
 
 
