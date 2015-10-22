@@ -11,4 +11,5 @@ def message_gerid(message):
     return message.split("@")[1]
 
 def message_getip(message):
-    return message.split("#")[1]
+    content = message.split("#")
+    return (content[0],content[1])

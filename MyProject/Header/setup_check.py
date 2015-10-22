@@ -12,15 +12,17 @@ import Pyro4
 from multiprocessing.pool import ThreadPool
 import listening_thread
 import time
-import submit
+import Auto_send_file
+import Auto_send_message
 from Logger.custome_logger import get_logger
+
 
 config = Config()
 logger = get_logger("setup_check")
 INPUT_QUEUE = config.ConfigSectionMap()["sqs_input_queue"]
 OUTPUT_QUEUE = config.ConfigSectionMap()["sqs_output_queue"]
-REMOTE_STORAGE_NAME = "PYRONAME"+config.ConfigSectionMap()["remote_storage_name"]
-
+REMOTE_STORAGE_NAME = "PYRONAME:"+config.ConfigSectionMap()["remote_storage_name"]
+LOCAL_QUEUE = {}
 static = Pyro4.Proxy("PYRONAME:example.data_storage@192.168.174.134:9999")
 pool = ThreadPool(processes=3)
 finish = 0
@@ -84,7 +86,10 @@ while finish<3:
 
 listening_thread.create_run_listener(sqs,sqs_client,static)
 
-submit.start_submit(1)
+Auto_send_file.start_submit(1,sqs)
+
+Auto_send_message.start_submit(1)
+
 
 
 

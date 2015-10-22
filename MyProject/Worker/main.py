@@ -23,14 +23,13 @@ OUTPUT_QUEUE_NAME = config.ConfigSectionMap()["sqs_output_queue"]
 #create_msg(sqs,'TestSQS','AHAHAH')
 #receive the msg and print out the Body
 input_queue=SQS_handler.get_queue(conn_sqs,INPUT_QUEUE_NAME)
-logger.info(input_queue)
 msg=SQS_handler.receive_msg(client,input_queue)
 msg_content = SQS_handler.response(msg)
 #may change later
 # header_Ip = SQS_mp.message_getip(msg_content)
-message_list = msg_content.split("/")
-name = message_list[0]
-filename = message_list[1]
+message_list,HeaderIP = SQS_mp.message_getip(msg_content)
+name = message_list.split("/")[0]
+filename = message_list.split("/")[1]
 #msg_list = message_process.message_process(msg)
 S3_handler.get_file(conn_s3,name,filename)
 imageProcess.process_image(filename)

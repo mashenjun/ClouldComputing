@@ -10,6 +10,7 @@ from configFile.instanceConfig import Config
 from SQS import handler as SQSHandler
 from SQS import message_process
 from Logger.custome_logger import get_logger
+import scheduler
 import Pyro4
 #import Static.static_create as create_static
 #import Static.static_handler as Shandler
@@ -24,7 +25,7 @@ REMOTE_STORAGE_NAME = "PYRONAME"+config.ConfigSectionMap()["remote_storage_name"
 exitFlag = 0
 
 
-def listening(threadName, sqs,client, delay,static ):
+def listening(threadName, sqs,client, delay, static ):
 
     queue = SQSHandler.get_queue(sqs, OUTPUT_QUEUE)
     while True:
@@ -40,6 +41,7 @@ def listening(threadName, sqs,client, delay,static ):
             logger.debug("reveive a message in output queue with "+user)
             static.minus_task(user)
             static.move_to_idle(instanceID)
+            scheduler.send_message_to_sqs(sqs)
             SQSHandler.delete_msg(client,msg,queue)
             if (static.get_task_value(user)==0):
                 print "user %s could fetch now " % user

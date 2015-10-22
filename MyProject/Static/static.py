@@ -8,6 +8,7 @@ class data_storage(object):
         self.idle_list = []
         self.busy_list = []
         self.task = {}
+        self.details = {}
 
     def get_idle(self):
         return self.idle_list
@@ -17,6 +18,9 @@ class data_storage(object):
 
     def get_task_value(self,name):
         return self.task[name]
+
+    def get_task(self):
+        return  self.task
 
     def get_sum(self):
         return len(self.idle_list)+len(self.busy_list)
@@ -52,7 +56,7 @@ class data_storage(object):
     def move_to_busy(self,item):
         self.add_to_busy(item)
         self.remove_from_idle(item)
-        print ("move to busy" + str(self.busy_list) +str(self.idley_list))
+        print ("move to busy" + str(self.busy_list) +str(self.idle_list))
 
     def add_task(self,name):
         self.task[name]+=1
@@ -66,4 +70,21 @@ class data_storage(object):
         self.task.update({name: num})
         print ("insert_new_task" + str(self.task) )
 
+    def get_all_tasks(self):
+        return self.details
 
+    def get_user_tasks(self,name):
+        return self.details[name]
+
+    def check_user_exist(self,name):
+        return self.details.has_key(name)
+
+    def add_task_in_dict(self,new_file,instance_id):
+        user_name = new_file.split('/')[0]
+        file_name = new_file.split('/')[1]
+        #if there is already this user in the dict
+        if(not self.check_user_exist(user_name)):
+            self.details[user_name]={}
+        user_dict = self.details[user_name]
+        user_dict[file_name]=instance_id
+        return self.details
