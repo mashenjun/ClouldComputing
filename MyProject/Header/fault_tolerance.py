@@ -31,16 +31,16 @@ def check_survive(ec2,static):
     not_match = [x for x in to_check_list if x not in compared_instance_ID]
     return not_match
 
-def reboot_not_match(ec2,static):
+def reboot_not_match(ec2,client,static):
     global valid
     while (valid):
         reboot_id_list = check_survive(ec2,static)
         #EC2_handler.start_instance(reboot_id_list)
-        thread(EC2_handler.start_instance,reboot_id_list)
+        thread(EC2_handler.start_instance,client,reboot_id_list)
         time.sleep(5)
     #return response
 
             
-def start_check_survive(ec2,static):
+def start_check_survive(ec2,client,static):
     #start the thread
-    thread(reboot_not_match,ec2,static)
+    thread(reboot_not_match,ec2,client,static)
