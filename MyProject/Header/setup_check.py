@@ -15,7 +15,8 @@ import time
 import Auto_send_file
 from Logger.custome_logger import get_logger
 import backstage_scheduler
-import fault_tolerance as ft
+
+import fault_tolerance
 
 config = Config()
 logger = get_logger(__file__)
@@ -24,7 +25,7 @@ OUTPUT_QUEUE = config.ConfigSectionMap()["sqs_output_queue"]
 REMOTE_STORAGE_NAME = "PYRONAME:"+config.ConfigSectionMap()["remote_storage_name"]
 
 LOCAL_QUEUE = {}
-static = Pyro4.Proxy("PYRONAME:example.data_storage@192.168.174.134:9999")
+static = Pyro4.Proxy("PYRONAME:example.data_storage@172.31.30.52:9999")
 pool = ThreadPool(processes=3)
 finish = 0
 # check the instance pool and setup system
@@ -106,8 +107,7 @@ listening_thread.create_run_listener(sqs,sqs_client,static)
 
 Auto_send_file.start_submit(1,static)
 
-ft.start_check_survive(ec2,static)
-
+fault_tolerance.start_check_survive(ec2,ec2_client,static)
 
 
 

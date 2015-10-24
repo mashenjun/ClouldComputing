@@ -20,7 +20,7 @@ IMAGE_FOLDER = "images"
 IMAGE_RESULT_FOLDER = "imageResult"
 
 MODULE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
-static = Pyro4.Proxy("PYRONAME:example.data_storage@192.168.174.134:9999")
+static = Pyro4.Proxy("PYRONAME:example.data_storage@172.31.30.52:9999")
 s3 = s3h.connect_to_S3()
 
 class thread(threading.Thread):
