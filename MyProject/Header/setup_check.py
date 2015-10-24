@@ -15,6 +15,7 @@ import time
 import Auto_send_file
 from Logger.custome_logger import get_logger
 import backstage_scheduler
+import fault_tolerance
 
 config = Config()
 logger = get_logger(__file__)
@@ -106,7 +107,7 @@ listening_thread.create_run_listener(sqs,sqs_client,static)
 
 Auto_send_file.start_submit(1,static)
 
-
+fault_tolerance.start_check_survive(ec2,ec2_client,static)
 
 
 
