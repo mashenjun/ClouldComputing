@@ -10,7 +10,7 @@ from boto3.session import Session
 from configFile.instanceConfig import Config
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from Logger import custome_logger
-import static
+
 
 logger = custome_logger.get_logger("EC2.handler")
 config = Config()
@@ -42,14 +42,14 @@ def create_instance(ec2,numberofinstance):
     NetworkInterfaces=[{'DeviceIndex':0,'AssociatePublicIpAddress':True},])
     return instances
 
-def create_instance_from_image(ec2,numberofinstance ):
+def create_instance_from_image(ec2,numberofinstance,static):
     instances = ec2.create_instances(ImageId=AMI,MinCount=1,MaxCount=numberofinstance,
     KeyName='mashenjun',InstanceType='t2.micro',Monitoring={'Enabled':True},
     NetworkInterfaces=[{'DeviceIndex':0,'AssociatePublicIpAddress':True},])
     #get instanceIds list 
     instanceIds = get_instanceId(instances)
     #add the Ids list to the idle list
-    static.get_idle().append(instanceIds)
+    static.add_to_idle(instanceIds)
     return instances
 
 
@@ -90,12 +90,12 @@ def get_instance_worker(ec2):
 
 def get_instance_running_worker(ec2):
     instances = ec2.instances.filter(
-            Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]},{'Name': 'instance-state-name', 'Values': ['running']}])
+            Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]},{'Name': 'instance-state-name', 'Values': ['running','pending']}])
     return list(instances)
 
 def get_instance_stopped_worker(ec2):
     instances = ec2.instances.filter(
-            Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]},{'Name': 'instance-state-name', 'Values': ['stopped']}])
+            Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]},{'Name': 'instance-state-name', 'Values': ['stopped','stopping']}])
     return list(instances)
 
 def get_local_instanceId():

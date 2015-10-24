@@ -41,13 +41,13 @@ def listening(threadName, sqs,client, delay, static ):
             logger.debug("reveive a message in output queue with "+user)
             static.minus_task(user)
             static.move_to_idle(instanceID)
-            #scheduler.send_message_to_sqs(sqs)
+            # scheduler.send_message_to_sqs(sqs)
             SQSHandler.delete_msg(client,msg,queue)
             if (static.get_task_value(user)==0):
                 print "user %s could fetch now " % user
                 #user_t = fetch_data(wait_finish,user) #url
         else:
-            print "No msg now"
+            #print "No msg now"
             time.sleep(3*delay)
 #        SQSHandler.delete_msg(client, msg, queue)
         

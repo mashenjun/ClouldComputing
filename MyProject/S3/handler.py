@@ -170,5 +170,12 @@ def delete_input(conn_s3,name):
     bucket = conn_s3.get_bucket(BUCKET_NAME,validate=False)
     bucketListResultSet = bucket.list(prefix="input/"+name)
     result = bucket.delete_keys([key.name for key in bucketListResultSet])
-    return result    
+    return result
+
+def fentch_output(conn_s3,filename):
+    bucket = conn_s3.get_bucket(BUCKET_NAME,validate=False)
+    bucketListResultSet = bucket.list(prefix="output/"+filename)
+    for item in [key.name for key in bucketListResultSet]:
+        key = conn_s3.get_bucket(BUCKET_NAME).get_key(item)
+        key.get_contents_to_filename(LOCAL_RESULT + '/' + filename)
     

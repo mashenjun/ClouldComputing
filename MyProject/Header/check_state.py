@@ -14,35 +14,36 @@ from os import listdir
 from os.path import isfile, join, dirname
 from configFile.instanceConfig import Config
 
-class thread(threading.Thread):
-    def __init__(self, t, *args):
-        threading.Thread.__init__(self, target=t, args=args)
-        self.start()
-
-def tell_worker_to_run(instanceid):
-    instance = ec2cmd.get_instance(instanceid)
-    ssh_client = ec2cmd.ssh_to_instance(instance)
-    status,stdout,stderr=ec2cmd.ssh_run_command(ssh_client,"python /home/ubuntu/MyProject/Worker/main.py")
-    print (stdout)
-    print (stderr)
-
 config = Config()
 logger = get_logger(__file__)
 IMAGE_FOLDER = "images"
 IMAGE_RESULT_FOLDER = "imageResult"
 
-
 MODULE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
-
-
 static = Pyro4.Proxy("PYRONAME:example.data_storage@192.168.174.134:9999")
+s3 = s3h.connect_to_S3()
+
+class thread(threading.Thread):
+    def __init__(self, t, *args):
+        threading.Thread.__init__(self, target=t, args=args)
+        self.start()
+
+def moniter_state():
+    old = static.get_task_value(sys.argv[1])
+    print "still "+old+" tasks left"
+    while (1):
+        new = static.get_task_value(sys.argv[1])
+        if new == 0:
+            break
+        if old != new:
+            print "still "+new+" tasks left"
+            old = new
+        time.sleep(1)
+        print '\b.',
+        sys.stdout.flush()
 
 
-
-while static.get_task_value(sys.argv[1])!=0:
-    time.sleep(1)
-    print '\b.',
-    sys.stdout.flush()
-
-
-print("the task is finished .....")
+    print ("the task is finished ..... start fentch result")
+    s3h.fentch_output(s3,sys.argv[1])
+    s3h.delete_input(s3,sys.argv[1])
+    s3h.delete_output(s3,sys.argv[1])

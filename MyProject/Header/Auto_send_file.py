@@ -29,7 +29,9 @@ class thread(threading.Thread):
         threading.Thread.__init__(self, target=t, args=args)
         self.start()
 
-def update_changes_thread(ite_time,sqs):
+lock = threading.Lock()
+
+def update_changes_thread(ite_time,static):
     global LOCAL_QUEUE
     while(1):
         global state_file
@@ -37,14 +39,14 @@ def update_changes_thread(ite_time,sqs):
         dir_state = DirState.from_json(state_file)
         dir_state2 = DirState(d)
         changes = dir_state2 - dir_state
-        print changes
 #        print(dir_state)
 #        print(dir_state2)
         #update the changes (no thread)
         new_files=changes["created"]
         deleted_files = changes["deleted"]
-        print ("the new files are %s" % new_files)
-        print (len(new_files))
+        #print ("the new files are %s" % new_files)
+        #print (len(new_files))
+
         if (len(new_files)>0):
             S3_handler.send_files_head(new_files)
             print ("Have uploaded %i files" % len(new_files))
@@ -53,7 +55,8 @@ def update_changes_thread(ite_time,sqs):
             state_file = dir_state2.to_json()
             os.remove(old_state_file)
             #insert files into the scheduler
-            scheduler.insert_new_job(new_files)
+
+            scheduler.insert_new_job(new_files,static)
             logger.debug(scheduler.LOCAL_QUEUE)
             
             #invoke the scheduler and send the msg into sqs
@@ -65,14 +68,14 @@ def update_changes_thread(ite_time,sqs):
             state_file = dir_state2.to_json()
             os.remove(old_state_file)
         else:
-            time.sleep(2*ite_time)
+            time.sleep(ite_time)
             #global no_hit
             #no_hit+=1
             #if (no_hit==10):
             #    break
         
 
-def start_submit(time_to_check,sqs):
+def start_submit(time_to_check,static):
 #initial
     #start the thread
-    thread(update_changes_thread, time_to_check,sqs)
+    thread(update_changes_thread,time_to_check,static)

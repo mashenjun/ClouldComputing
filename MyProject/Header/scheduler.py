@@ -6,22 +6,24 @@ from Logger.custome_logger import get_logger
 from configFile.instanceConfig import Config
 from SQS import handler as SQS_handler
 from EC2 import cmdshell as cmd_handler
+from EC2 import handler as EC2_handler
 import deadline
+
 
 config = Config()
 logger = get_logger(__file__)
 INPUT_QUEUE = config.ConfigSectionMap()["sqs_input_queue"]
 
 LOCAL_QUEUE = {}
-static = Pyro4.Proxy("PYRONAME:example.data_storage@192.168.174.134:9999")
 KEY_PATH = config.ConfigSectionMap()["path_to_key"]
 
-def insert_new_job(new_files):
+def insert_new_job(new_files,static):
     map(insert_single_job,new_files)
     #refresh the task queue
     for user in return_all_users():
         static.insert_new_task(user,return_users_tasks(user))
-        LOCAL_QUEUE[user]['Deadline'] = deadline.deadline(LOCAL_QUEUE[user]['Counter'],static)
+        #LOCAL_QUEUE[user]['Deadline'].set_time(LOCAL_QUEUE[user]['Counter'])
+        LOCAL_QUEUE[user]['Deadline']=deadline.deadline(LOCAL_QUEUE[user]['Counter'],static)
     print "the task dict is: "
     print static.get_task()
     #result = [insert_new_job(p, p) for p in new_files]
@@ -30,41 +32,59 @@ def insert_single_job(file):
     global LOCAL_QUEUE
     user_name = file.split('/')[0]
     if (not LOCAL_QUEUE.has_key(user_name)):
+        #LOCAL_QUEUE[user_name]={'Tasks':[],'Counter':0,'Deadline':deadline.deadline(99999)}
         LOCAL_QUEUE[user_name]={'Tasks':[],'Counter':0}
-
     user_dic = LOCAL_QUEUE[user_name]
     user_dic['Tasks'].append(file)
-    user_dic['Counter']+=2
+    user_dic['Counter']+=3
 
 def return_task():
     global LOCAL_QUEUE
-    user_list = sorted(LOCAL_QUEUE.keys(),key = lambda e:LOCAL_QUEUE[e]["Deadline"].num)
-    logger.debug(user_list)
-    if len(user_list) ==0:
+
+    #logger.debug(user_list)
+    if len(LOCAL_QUEUE.keys()) ==0:
         return None
     else:
-        user_tasks = LOCAL_QUEUE[user_list[0]]['Tasks']
-        if len(user_tasks) >1:
-            return user_tasks.pop(0)
-        elif len(user_tasks) == 1:
-            user_dict = LOCAL_QUEUE.pop(user_list[0],None)
-            user_deadline = user_dict['Deadline']
-            user_deadline.valid = 0
-            user_tasks = user_dict['Tasks']
-            return user_tasks.pop(0)
-        else :
+        logger.debug(str(LOCAL_QUEUE))
+        user_old = {k:v for k,v in LOCAL_QUEUE.items() if v.has_key('Deadline')}
+        print ("user_old is: " + str(user_old))
+        user_list = sorted(user_old.keys(),key = lambda e:user_old[e]['Deadline'].num)
+        print ("user_list is: " + str(user_list))
+        #user_list = sorted(LOCAL_QUEUE.keys(),key = lambda e:LOCAL_QUEUE[e]['Deadline'].num)
+        #user_tasks = LOCAL_QUEUE[user_list[0]]['Tasks']
+        if len(user_list) == 0:
             return None
+        else:
+            user_tasks = user_old[user_list[0]]['Tasks']
+            user_name = user_list[0]
+            if len(user_tasks) >1:
+                return user_tasks.pop(0)
+            elif len(user_tasks) == 1:
+                #LOCAL_QUEUE[user_name]['Deadline'].set_valid(0)
+                LOCAL_QUEUE[user_name]['Deadline'].set_valid(0)
+                #logger.debug("*********************the valid num is: " + str(LOCAL_QUEUE[user_name]['Deadline'].valid))
+                #user_dict = LOCAL_QUEUE.pop(user_name,None)
+                user_dict = LOCAL_QUEUE.pop(user_name,None)
+                #user_deadline = user_dict['Deadline']
+                #user_deadline.set_valid(0)
+                user_tasks = user_dict['Tasks']
 
-def send_message_to_sqs(sqs):
+                return user_tasks.pop(0)
+            else:
+                return None
+
+def send_message_to_sqs(sqs,static):
     # get the length of idle list
     num_idle = len(static.get_idle())
-    logger.debug(num_idle)
-    #header_IP = EC2_handler.get_local_ipv4()
-    header_IP ="192.168.174.134"
+    #logger.debug(num_idle)
+    header_IP = EC2_handler.get_local_ipv4()
+    #header_IP ="192.168.174.134"
+    header_Port = "9999"
+    header_location = header_IP+":"+header_Port
     # iterate the idle and assign the jobs to the idle worker until there are no tasks in local queue or no workers
     for i in range(0,num_idle):
         selected_job = return_task()
-        logger.debug(selected_job)
+        #logger.debug(selected_job)
         if selected_job is None:
             break
         else:
@@ -74,7 +94,7 @@ def send_message_to_sqs(sqs):
             #ssh to that id
             cmd_handler.get_instance(selected_id)
             #build the msg username/filename#header_IP
-            msg = selected_job +"#"+header_IP
+            msg = selected_job +"#"+header_location
             #send msg to invoke the instance
             SQS_handler.create_msg(sqs,INPUT_QUEUE,msg)
             #send ssh to the instance

@@ -9,7 +9,7 @@ from SQS import message_process as SQS_mp
 from Logger import custome_logger
 from configFile.instanceConfig import Config
 from EC2 import handler as EC2_handler
-import Pyro4
+import update_static as us
 config = Config()
 logger = custome_logger.get_logger(__name__)
 
@@ -25,9 +25,11 @@ OUTPUT_QUEUE_NAME = config.ConfigSectionMap()["sqs_output_queue"]
 input_queue=SQS_handler.get_queue(conn_sqs,INPUT_QUEUE_NAME)
 msg=SQS_handler.receive_msg(client,input_queue)
 msg_content = SQS_handler.response(msg)
+
 #may change later
 # header_Ip = SQS_mp.message_getip(msg_content)
 message_list,HeaderIP = SQS_mp.message_getip(msg_content)
+us.update_static(message_list,HeaderIP)
 name = message_list.split("/")[0]
 filename = message_list.split("/")[1]
 #msg_list = message_process.message_process(msg)
@@ -37,6 +39,7 @@ S3_handler.send_file(conn_s3,name)
 S3_handler.clear_local_folder()
 my_instanceId=EC2_handler.get_local_instanceId()
 SQS_handler.create_msg(conn_sqs, OUTPUT_QUEUE_NAME,join(name,filename)+"@"+my_instanceId)
+us.del_static(HeaderIP)
 response = SQS_handler.delete_msg(client,msg,input_queue)
 logger.debug("worker delete msg  state: " + str(response))
 

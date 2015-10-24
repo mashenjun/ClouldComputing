@@ -10,6 +10,7 @@ class data_storage(object):
         self.task = {}
         self.details = {}
 
+
     def get_idle(self):
         return self.idle_list
 
@@ -76,15 +77,14 @@ class data_storage(object):
     def get_user_tasks(self,name):
         return self.details[name]
 
-    def check_user_exist(self,name):
-        return self.details.has_key(name)
-
-    def add_task_in_dict(self,new_file,instance_id):
-        user_name = new_file.split('/')[0]
-        file_name = new_file.split('/')[1]
-        #if there is already this user in the dict
-        if(not self.check_user_exist(user_name)):
-            self.details[user_name]={}
-        user_dict = self.details[user_name]
-        user_dict[file_name]=instance_id
+    def register_in_details(self,msg,instance_id):
+        # structure of details {instance_id:new_file}, invoke by worker
+        self.details[instance_id] = msg
         return self.details
+
+    def de_register_in_details(self,instance_id):
+        try:
+            del self.details[instance_id]
+        except KeyError:
+            pass
+

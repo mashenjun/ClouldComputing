@@ -13,43 +13,50 @@ from SQS import handler as SQS_handler
 from Logger import custome_logger
 from configFile.instanceConfig import Config
 from EC2 import handler as EC2_handler
-from dirtools import Dir, DirState
-from static import static as static_handler
+from Logger.custome_logger import get_logger
+
 import threading
 import time
 import scheduler
 import math
 
-logger = custome_logger.get_logger(__file__)
+logger = get_logger(__file__)
 config = Config()
 valid = 1
+
 
 class thread(threading.Thread):
     def __init__(self, t, *args):
         threading.Thread.__init__(self, target=t, args=args)
         self.start()
 
-def check_the_idle_list(sqs):
+def check_the_idle_list(sqs,static):
     global valid
     while (valid):
         # get both the idle instances number and the waiting tasks
-        idle_num = len(static_handler.get_idle())
-        if (idle_num>0) :
-            scheduler.send_message_to_sqs(sqs)       
+        idle_num = len(static.get_idle())
+        if (idle_num > 0) :
+            scheduler.send_message_to_sqs(sqs,static)
             
-def launch_new_instances(ec2):
+def launch_new_instances(ec2,static):
     global valid
     while (valid):
        # compare the idle instances with the local queue
-        idle_num = len(static_handler.get_idle())
+        idle_num = len(static.get_idle())
+        count = static.get_sum()
         waiting_tasks = len(scheduler.LOCAL_QUEUE)
         extra_workers = math.ceil(waiting_tasks - idle_num)/2
         if (extra_workers>0) :
-            EC2_handler.create_instance_from_image(ec2,extra_workers)
+            instances = EC2_handler.create_instance_from_image(ec2,extra_workers.static)
+            logger.debug("create new instance"+str(instances)+"with thread")
+            instanceid = EC2_handler.get_instanceId(instances)
+            for i in instanceid:
+                count += 1
+                EC2_handler.set_key_name(ec2,i,"Name","Worker"+str(count))
         
             
         
-def start_backstage_scheduler(sqs,ec2):
+def start_backstage_scheduler(sqs,ec2,static):
     #start the thread
-    thread(check_the_idle_list,sqs)
-    thread(launch_new_instances,ec2)
+    thread(check_the_idle_list,sqs,static)
+    thread(launch_new_instances,ec2,static)
