@@ -84,7 +84,7 @@ class data_storage(object):
 
     def de_register_in_details(self,instance_id):
         try:
-            del self.details[instance_id]
+            return self.details.pop(instance_id,None)           
         except KeyError:
             pass
 
