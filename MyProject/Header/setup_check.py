@@ -37,8 +37,7 @@ def ec2_init():
     stopped_workers = EC2Handler.get_instance_stopped_worker(ec2)
     if (len(stopped_workers)>0):
         stopped_ID = EC2Handler.get_instanceId(stopped_workers)
-        for item in stopped_ID:
-            EC2Handler.start_instance(ec2_client,item)
+        EC2Handler.start_instance(ec2_client,stopped_ID)
 
     workers = EC2Handler.get_instance_running_worker(ec2)
     logger.debug("the current workers is "+ str(workers))

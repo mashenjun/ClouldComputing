@@ -64,11 +64,11 @@ def set_key_name(ec2,instanceId,key,value):
 
 
 def start_instance(client,instanceId):
-    response=client.start_instances(InstanceIds=[instanceId])
+    response=client.start_instances(InstanceIds=instanceId)
     return response
 
 def stop_instance(client,instanceId):
-    response=client.stop_instances(InstanceIds=[instanceId])
+    response=client.stop_instances(InstanceIds=instanceId)
     return response
 
 def get_instance_num(ec2, running):
