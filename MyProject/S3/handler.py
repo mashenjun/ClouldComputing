@@ -175,7 +175,14 @@ def delete_input(conn_s3,name):
 def fentch_output(conn_s3,filename):
     bucket = conn_s3.get_bucket(BUCKET_NAME,validate=False)
     bucketListResultSet = bucket.list(prefix="output/"+filename)
+    directory = join (LOCAL_RESULT,filename)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     for item in [key.name for key in bucketListResultSet]:
+        name = item.split("/")
         key = conn_s3.get_bucket(BUCKET_NAME).get_key(item)
-        key.get_contents_to_filename(LOCAL_RESULT + '/' + filename)
+        key.get_contents_to_filename(join(directory,name[-1]))
+
+    path_to_input = join(LOCAL_IMG,filename)
+    removeall(path_to_input)
     

@@ -20,7 +20,8 @@ IMAGE_FOLDER = "images"
 IMAGE_RESULT_FOLDER = "imageResult"
 
 MODULE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
-static = Pyro4.Proxy("PYRONAME:example.data_storage@172.31.30.52:9999")
+ip = config.ConfigSectionMap()["head_ip"]
+static = Pyro4.Proxy("PYRONAME:example.data_storage@"+ip+":9999")
 s3 = s3h.connect_to_S3()
 
 class thread(threading.Thread):
@@ -28,12 +29,12 @@ class thread(threading.Thread):
         threading.Thread.__init__(self, target=t, args=args)
         self.start()
 
-def moniter_state():
+def moniter_state(username):
     old = static.get_task_value(sys.argv[1])
-    print "still "+old+" tasks left"
+    print "still "+str(old)+" tasks left"
     while (1):
         new = static.get_task_value(sys.argv[1])
-        if new == 0:
+        if new <= 0:
             break
         if old != new:
             print "still "+new+" tasks left"
@@ -42,8 +43,11 @@ def moniter_state():
         print '\b.',
         sys.stdout.flush()
 
-
     print ("the task is finished ..... start fentch result")
-    s3h.fentch_output(s3,sys.argv[1])
-    s3h.delete_input(s3,sys.argv[1])
-    s3h.delete_output(s3,sys.argv[1])
+    s3h.fentch_output(s3,username)
+    s3h.delete_input(s3,username)
+    s3h.delete_output(s3,username)
+    print ("you can get the result under the imageresult file")
+
+if __name__ == "__main__":
+    thread(moniter_state,sys.argv[1])

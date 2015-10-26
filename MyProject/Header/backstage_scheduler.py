@@ -47,8 +47,8 @@ def launch_new_instances(ec2,static):
         waiting_tasks = len(scheduler.LOCAL_QUEUE)
         extra_workers = math.ceil(waiting_tasks - idle_num)/2
         if (extra_workers>0) :
-            instances = EC2_handler.create_instance_from_image(ec2,extra_workers.static)
-            logger.debug("create new instance"+str(instances)+"with thread")
+            instances = EC2_handler.create_instance_from_image(ec2,extra_workers,static)
+            logger.debug("create"+extra_workers+" new instance"+str(instances)+"with thread")
             instanceid = EC2_handler.get_instanceId(instances)
             for i in instanceid:
                 count += 1

@@ -23,11 +23,12 @@ logger = get_logger(__file__)
 INPUT_QUEUE = config.ConfigSectionMap()["sqs_input_queue"]
 OUTPUT_QUEUE = config.ConfigSectionMap()["sqs_output_queue"]
 REMOTE_STORAGE_NAME = "PYRONAME:"+config.ConfigSectionMap()["remote_storage_name"]
-
+ip = config.ConfigSectionMap()["head_ip"]
 LOCAL_QUEUE = {}
-static = Pyro4.Proxy("PYRONAME:example.data_storage@172.31.30.52:9999")
+static = Pyro4.Proxy("PYRONAME:example.data_storage@"+ip+":9999")
 pool = ThreadPool(processes=3)
 finish = 0
+start_time = time.clock()
 # check the instance pool and setup system
 # check instance number
 
@@ -107,7 +108,7 @@ listening_thread.create_run_listener(sqs,sqs_client,static)
 
 Auto_send_file.start_submit(1,static)
 
-fault_tolerance.start_check_survive(ec2,ec2_client,static)
+fault_tolerance.start_check_survive(ec2,ec2_client,static,sqs)
 
 
 

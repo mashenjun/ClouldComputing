@@ -88,6 +88,7 @@ def send_message_to_sqs(sqs,static):
         if selected_job is None:
             break
         else:
+            logger.debug("send message to woeker ")
             selected_id=static.get_idle()[0]
             #move the instance to busy list
             static.move_to_busy(selected_id)
@@ -99,6 +100,8 @@ def send_message_to_sqs(sqs,static):
             SQS_handler.create_msg(sqs,INPUT_QUEUE,msg)
             #send ssh to the instance
             status,stdout,stderr=ssh_the_worker(selected_id)
+            logger.debug(stdout)
+            logger.debug(stderr)
 
 
 def ssh_the_worker(instance_id):
