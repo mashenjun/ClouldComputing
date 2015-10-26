@@ -19,35 +19,48 @@ LOCAL_QUEUE = {}
 KEY_PATH = config.ConfigSectionMap()["path_to_key"]
 ip = config.ConfigSectionMap()["head_ip"]
 add_static = Pyro4.Proxy("PYRONAME:example.data_storage@"+ip+":9999")
+LOCAL_NEW_FILES = {}
+
+
 
 def insert_new_job(new_files,static):
+    global LOCAL_NEW_FILES
+    LOCAL_NEW_FILES = {}
     map(insert_single_job,new_files)
+    print "---------------the LOCAL_NEW_FILES is: ----------" + str(LOCAL_NEW_FILES)
     #refresh the task queue
-    for user in return_all_users():
-#        task_number = 
-        static.insert_new_task(user,return_users_tasks(user,static))
+    for user in LOCAL_NEW_FILES.keys():
+        #static.insert_new_task(user,return_users_tasks(user,static))
         #LOCAL_QUEUE[user]['Deadline'].set_time(LOCAL_QUEUE[user]['Counter'])
-        LOCAL_QUEUE[user]['Deadline']=deadline.deadline(LOCAL_QUEUE[user]['Counter'],static)
+        #LOCAL_QUEUE[user]['Deadline']=deadline.deadline(LOCAL_QUEUE[user]['Counter'],static)
+        static.insert_new_task(user,LOCAL_NEW_FILES[user])
+        if (not LOCAL_QUEUE[user].has_key('Deadline')):
+            LOCAL_QUEUE[user]['Deadline'] = deadline.deadline(LOCAL_NEW_FILES[user]*3,static)
+        else:
+            LOCAL_QUEUE[user]['Deadline'].add_num(LOCAL_NEW_FILES[user]*3)
+    logger.debug("------------------------------LOCAL_QUEUE is" + str(LOCAL_QUEUE))
     print "the task dict is: "+static.get_task()
     #result = [insert_new_job(p, p) for p in new_files]
 
 def insert_single_job(file):
     global LOCAL_QUEUE
+    global LOCAL_NEW_FILES
     user_name = file.split('/')[0]
     if (not LOCAL_QUEUE.has_key(user_name)):
         #LOCAL_QUEUE[user_name]={'Tasks':[],'Counter':0,'Deadline':deadline.deadline(99999)}
         LOCAL_QUEUE[user_name]={'Tasks':[],'Counter':0}
-    else:
-        add_static.add_task(user_name)
+    if (not LOCAL_NEW_FILES.has_key(user_name)):
+        LOCAL_NEW_FILES[user_name] = 0
     user_dic = LOCAL_QUEUE[user_name]
     user_dic['Tasks'].append(file)
-    user_dic['Counter']+=3
+    user_dic['Counter'] += 1
+    LOCAL_NEW_FILES[user_name] += 1
 
 def return_task():
     global LOCAL_QUEUE
 
     #logger.debug(user_list)
-    if len(LOCAL_QUEUE.keys()) ==0:
+    if len(LOCAL_QUEUE.keys()) == 0:
         return None
     else:
         logger.debug(str(LOCAL_QUEUE))
@@ -93,7 +106,7 @@ def send_message_to_sqs(sqs,static):
         if selected_job is None:
             break
         else:
-            logger.debug("send message to woeker ")
+            logger.debug("send message to worker ")
             selected_id=static.get_idle()[0]
             #move the instance to busy list
             static.move_to_busy(selected_id)
@@ -125,3 +138,4 @@ def return_users_tasks(user_name,static):
 def return_all_users():
     global LOCAL_QUEUE
     return LOCAL_QUEUE.keys()
+
