@@ -4,5 +4,6 @@
 *.class
 *.jpg
 *.config
+*.pem
 AWSExample/
 Examples/
