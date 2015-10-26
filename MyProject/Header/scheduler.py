@@ -8,6 +8,7 @@ from SQS import handler as SQS_handler
 from EC2 import cmdshell as cmd_handler
 from EC2 import handler as EC2_handler
 import deadline
+import Pyro4
 
 
 config = Config()
@@ -16,6 +17,8 @@ INPUT_QUEUE = config.ConfigSectionMap()["sqs_input_queue"]
 
 LOCAL_QUEUE = {}
 KEY_PATH = config.ConfigSectionMap()["path_to_key"]
+ip = config.ConfigSectionMap()["head_ip"]
+add_static = Pyro4.Proxy("PYRONAME:example.data_storage@"+ip+":9999")
 
 def insert_new_job(new_files,static):
     map(insert_single_job,new_files)
@@ -24,8 +27,7 @@ def insert_new_job(new_files,static):
         static.insert_new_task(user,return_users_tasks(user))
         #LOCAL_QUEUE[user]['Deadline'].set_time(LOCAL_QUEUE[user]['Counter'])
         LOCAL_QUEUE[user]['Deadline']=deadline.deadline(LOCAL_QUEUE[user]['Counter'],static)
-    print "the task dict is: "
-    print static.get_task()
+    print "the task dict is: "+static.get_task()
     #result = [insert_new_job(p, p) for p in new_files]
 
 def insert_single_job(file):
@@ -34,6 +36,8 @@ def insert_single_job(file):
     if (not LOCAL_QUEUE.has_key(user_name)):
         #LOCAL_QUEUE[user_name]={'Tasks':[],'Counter':0,'Deadline':deadline.deadline(99999)}
         LOCAL_QUEUE[user_name]={'Tasks':[],'Counter':0}
+    else:
+        add_static.add_task(user_name)
     user_dic = LOCAL_QUEUE[user_name]
     user_dic['Tasks'].append(file)
     user_dic['Counter']+=3

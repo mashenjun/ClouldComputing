@@ -44,7 +44,7 @@ def create_instance(ec2,numberofinstance):
 
 def create_instance_from_image(ec2,numberofinstance,static):
     instances = ec2.create_instances(ImageId=AMI,MinCount=1,MaxCount=numberofinstance,
-    KeyName='mashenjun',InstanceType='t2.micro',Monitoring={'Enabled':True},
+    KeyName='mashenjun',SecurityGroups=['launch-wizard-1'],InstanceType='t2.micro',Monitoring={'Enabled':True},
     NetworkInterfaces=[{'DeviceIndex':0,'AssociatePublicIpAddress':True},])
     #get instanceIds list 
     instanceIds = get_instanceId(instances)

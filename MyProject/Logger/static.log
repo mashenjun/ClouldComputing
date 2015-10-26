@@ -1,0 +1,73 @@
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:48:16,378 - add to idle[u'i-019846bd', u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:50,928 - insert_new_task{u'mashenjun': 11}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:51,006 - add to busy[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:51,006 - remove from idle[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:53,960 - insert_new_task{u'mashenjun': 13}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:55,345 - add to busy[u'i-019846bd', u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:55,346 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:55,366 - minus_task{u'mashenjun': 12}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:55,367 - add to idle[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:55,367 - remove from busy[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:59,373 - add to busy[u'i-6c77a1d0', u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:49:59,373 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:02,054 - minus_task{u'mashenjun': 11}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:02,055 - add to idle[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:02,055 - remove from busy[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:04,612 - add to busy[u'i-019846bd', u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:04,613 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:08,006 - minus_task{u'mashenjun': 10}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:08,007 - add to idle[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:08,007 - remove from busy[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:08,584 - add to busy[u'i-6c77a1d0', u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:08,585 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:10,992 - minus_task{u'mashenjun': 9}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:11,015 - add to idle[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:11,016 - remove from busy[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:12,659 - add to busy[u'i-019846bd', u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:12,659 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:16,124 - minus_task{u'mashenjun': 8}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:16,124 - add to idle[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:16,124 - remove from busy[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:16,583 - add to busy[u'i-6c77a1d0', u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:16,583 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:17,686 - minus_task{u'mashenjun': 7}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:19,004 - add to idle[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:19,004 - remove from busy[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:20,746 - add to busy[u'i-019846bd', u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:20,746 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:24,166 - minus_task{u'mashenjun': 6}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:24,167 - add to idle[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:24,167 - remove from busy[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:24,697 - add to busy[u'i-6c77a1d0', u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:24,697 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:26,747 - minus_task{u'mashenjun': 5}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:26,748 - add to idle[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:26,748 - remove from busy[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:29,687 - add to busy[u'i-019846bd', u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:29,687 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:33,102 - minus_task{u'mashenjun': 4}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:33,103 - add to idle[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:33,103 - remove from busy[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:34,128 - add to busy[u'i-6c77a1d0', u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:34,128 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:34,133 - minus_task{u'mashenjun': 3}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:34,134 - add to idle[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:34,134 - remove from busy[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:38,077 - add to busy[u'i-019846bd', u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:38,077 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:41,824 - minus_task{u'mashenjun': 2}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:41,825 - add to idle[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:41,825 - remove from busy[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:44,019 - add to busy[u'i-6c77a1d0', u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:44,019 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:47,804 - minus_task{u'mashenjun': 1}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:47,804 - add to idle[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:47,805 - remove from busy[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:48,507 - add to busy[u'i-019846bd', u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:48,507 - remove from idle[]
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:51,320 - minus_task{u'mashenjun': 0}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:51,321 - add to idle[u'i-019846bd']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:51,321 - remove from busy[u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:56,416 - minus_task{u'mashenjun': -1}
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:56,416 - add to idle[u'i-019846bd', u'i-6c77a1d0']
+/home/ubuntu/MyProject/Static/static.pyc - 2015-10-26 16:50:56,416 - remove from busy[]

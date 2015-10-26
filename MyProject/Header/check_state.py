@@ -35,6 +35,7 @@ def moniter_state(username):
     while (1):
         new = static.get_task_value(sys.argv[1])
         if new <= 0:
+            static.del_task(username)
             break
         if old != new:
             print "still "+new+" tasks left"

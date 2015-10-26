@@ -18,14 +18,19 @@ class deadline(object):
     def __init__(self, time,static):
         self.num = time
         self.static = static
+        self.lock = threading.Lock()
         t=threading.Thread(target= self.countdown)
         t.start()
 
 
     def countdown(self):
         while ( self.num > 0):
-            self.num -= 1
-            time.sleep(4)
+            self.lock.acquire()
+            try:
+                self.num -= 1
+                time.sleep(2)
+            finally:
+                self.lock.release()
             if self.valid == 0:
                 logger.debug("I am Dead @ time :"+str(self.num))
                 break
@@ -38,12 +43,21 @@ class deadline(object):
                 break
 
     def add_num(self, value):
-        self.num +=value
+        self.lock.acquire()
+        try:
+            self.num +=value
+        finally:
+            self.lock.release()
 
     def set_valid(self,num):
         self.valid = num
 
     def set_time(self,value):
-        self.num = value
+        self.lock.acquire()
+        try:
+            self.num = value
+        finally:
+            self.lock.release()
+
 
 

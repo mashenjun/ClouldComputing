@@ -34,10 +34,11 @@ def check_the_idle_list(sqs,static):
     global valid
     while (valid):
         # get both the idle instances number and the waiting tasks
+
         idle_num = len(static.get_idle())
         if (idle_num > 0) :
             scheduler.send_message_to_sqs(sqs,static)
-            
+
 def launch_new_instances(ec2,static):
     global valid
     while (valid):
@@ -46,8 +47,9 @@ def launch_new_instances(ec2,static):
         count = static.get_sum()
         waiting_tasks = len(scheduler.LOCAL_QUEUE)
         extra_workers = math.ceil(waiting_tasks - idle_num)/2
+        logger.debug("==============the extra_worker is "+ str(extra_workers)+"==================")
         if (extra_workers>0) :
-            instances = EC2_handler.create_instance_from_image(ec2,extra_workers,static)
+            instances = EC2_handler.create_instance_from_image(ec2,int(extra_workers),static)
             logger.debug("create"+extra_workers+" new instance"+str(instances)+"with thread")
             instanceid = EC2_handler.get_instanceId(instances)
             for i in instanceid:
