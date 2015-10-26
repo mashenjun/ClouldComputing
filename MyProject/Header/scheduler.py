@@ -24,7 +24,8 @@ def insert_new_job(new_files,static):
     map(insert_single_job,new_files)
     #refresh the task queue
     for user in return_all_users():
-        static.insert_new_task(user,return_users_tasks(user))
+#        task_number = 
+        static.insert_new_task(user,return_users_tasks(user,static))
         #LOCAL_QUEUE[user]['Deadline'].set_time(LOCAL_QUEUE[user]['Counter'])
         LOCAL_QUEUE[user]['Deadline']=deadline.deadline(LOCAL_QUEUE[user]['Counter'],static)
     print "the task dict is: "+static.get_task()
@@ -114,10 +115,12 @@ def ssh_the_worker(instance_id):
     status,stdout,stderr=cmd_handler.ssh_run_command(ssh_client,"python /home/ubuntu/MyProject/Worker/main.py")
     return (status,stdout,stderr)
 
-def return_users_tasks(user_name):
+def return_users_tasks(user_name,static):
     global LOCAL_QUEUE
     user_dic = LOCAL_QUEUE[user_name]
-    return len(user_dic['Tasks'])
+    #return len(user_dic['Tasks'])
+    #add the tasks in user_dic + assigned tasks
+    return len(user_dic['Tasks']) + len(static.get_user_tasks(user_name))
 
 def return_all_users():
     global LOCAL_QUEUE

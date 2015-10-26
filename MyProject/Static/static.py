@@ -83,7 +83,7 @@ class data_storage(object):
         return self.details
 
     def get_user_tasks(self,name):
-        return self.details[name]
+         return {k:v for k,v in self.details.items() if v.split('/')[0]==name}
 
     def register_in_details(self,msg,instance_id):
         # structure of details {instance_id:new_file}, invoke by worker

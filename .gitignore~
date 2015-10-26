@@ -5,5 +5,10 @@
 *.jpg
 *.config
 *.pem
+<<<<<<< HEAD
+*.log
+=======
+*.db
+>>>>>>> a467587b6178bfe3e41f163b51449dc6a41c4c8f
 AWSExample/
 Examples/
