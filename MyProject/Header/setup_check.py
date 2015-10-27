@@ -17,6 +17,7 @@ from Logger.custome_logger import get_logger
 import backstage_scheduler
 
 import fault_tolerance
+import delete_worker
 
 config = Config()
 logger = get_logger(__file__)
@@ -106,11 +107,11 @@ backstage_scheduler.start_backstage_scheduler(sqs,ec2,static)
 
 listening_thread.create_run_listener(sqs,sqs_client,static)
 
-Auto_send_file.start_submit(1,static)
+Auto_send_file.start_submit(s3,1,static)
 
 fault_tolerance.start_check_survive(ec2,ec2_client,static,sqs)
 
-
+delete_worker.start_delete_worker(ec2,static)
 
 
 

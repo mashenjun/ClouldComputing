@@ -27,19 +27,20 @@ def insert_new_job(new_files,static):
     global LOCAL_NEW_FILES
     LOCAL_NEW_FILES = {}
     map(insert_single_job,new_files)
-    print "---------------the LOCAL_NEW_FILES is: ----------" + str(LOCAL_NEW_FILES)
+    logger.debug("-----------------------------the LOCAL_NEW_FILES is: " + str(LOCAL_NEW_FILES))
     #refresh the task queue
     for user in LOCAL_NEW_FILES.keys():
         #static.insert_new_task(user,return_users_tasks(user,static))
         #LOCAL_QUEUE[user]['Deadline'].set_time(LOCAL_QUEUE[user]['Counter'])
         #LOCAL_QUEUE[user]['Deadline']=deadline.deadline(LOCAL_QUEUE[user]['Counter'],static)
         static.insert_new_task(user,LOCAL_NEW_FILES[user])
+        logger.debug("-----------------------------insert_new_task: " +str(LOCAL_NEW_FILES[user]))
         if (not LOCAL_QUEUE[user].has_key('Deadline')):
             LOCAL_QUEUE[user]['Deadline'] = deadline.deadline(LOCAL_NEW_FILES[user]*3,static)
         else:
             LOCAL_QUEUE[user]['Deadline'].add_num(LOCAL_NEW_FILES[user]*3)
     logger.debug("------------------------------LOCAL_QUEUE is" + str(LOCAL_QUEUE))
-    print "the task dict is: "+static.get_task()
+    logger.debug("-----------------------------the task dict is: " +str(static.get_task()))
     #result = [insert_new_job(p, p) for p in new_files]
 
 def insert_single_job(file):

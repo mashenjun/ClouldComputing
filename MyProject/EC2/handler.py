@@ -6,11 +6,13 @@ Created on Thu Oct  8 06:11:53 2015
 """
 import sys, os
 import boto.utils
+import threading
+import time
 from boto3.session import Session
 from configFile.instanceConfig import Config
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from Logger import custome_logger
-
+from EC2 import cmdshell as ec2cmdshell
 
 logger = custome_logger.get_logger("EC2.handler")
 config = Config()
@@ -23,6 +25,12 @@ AMI = config.ConfigSectionMap()["ami"]
 session = Session(aws_access_key_id=ACCESS_KEY_ID,
                   aws_secret_access_key=SECRET_ACCESS_KEY,
                   region_name=REGION_NAME)
+
+class thread(threading.Thread):
+    def __init__(self, t, *args):
+        threading.Thread.__init__(self, target=t, args=args)
+        self.start()
+
 def get_resource():
     ec2=session.resource('ec2')
     return ec2
@@ -49,9 +57,15 @@ def create_instance_from_image(ec2,numberofinstance,static):
     #get instanceIds list 
     instanceIds = get_instanceId(instances)
     #add the Ids list to the idle list
-    static.add_to_idle(instanceIds)
+    #static.add_to_idle(instanceIds)
+    #create a thread for each instance to wait until they finish initializing
+    for instanceId in instanceIds:
+        thread(wait_worker_init,ec2,static,instanceId)
     return instances
 
+def terminate_instance(ec2,instanceid):
+    instance=ec2.get_all_instances(instance_ids=[instanceid])[0].instances[0]
+    instance.terminate()
 
 def get_instanceId(instances):
     instanceIds = [r._id for r in instances]
@@ -106,7 +120,15 @@ def get_local_ipv4():
     region = boto.utils.get_instance_metadata()
     return region["local-ipv4"]
 
-
+def wait_worker_init(ec2,static,instanceId):
+    # check the state of instance
+    # wait until it is running
+    static.add_pending(instanceId)
+    while(not get_instance_status(ec2,instanceId)):
+        time.sleep(2)
+    instance = ec2cmdshell.get_instance(instanceId)
+    ec2cmdshell.ssh_to_instance(instance)
+    static.move_from_pending_to_idle(instanceId)
 """
 Application
 """

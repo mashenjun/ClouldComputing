@@ -56,7 +56,7 @@ def check_queue_exist(list):
 def receive_msg(client, queue):
     msg = client.receive_message(QueueUrl=queue.url)
     if len(msg)>1:
-        change_visibility(client,queue,msg,10)
+        change_visibility(client,queue,msg,60)
     return msg
 
 def receive_multi_msg(client, queue, num):

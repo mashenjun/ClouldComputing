@@ -14,6 +14,7 @@ class data_storage(object):
         self.busy_list = []
         self.task = {}
         self.details = {}
+        self.pending = []
 
     def get_idle(self):
         return self.idle_list
@@ -27,8 +28,20 @@ class data_storage(object):
     def get_task(self):
         return self.task
 
+    def get_idle_num(self):
+        return len(self.idle_list)
+
     def get_sum(self):
         return len(self.idle_list) + len(self.busy_list)
+
+    def get_free_worker(self):
+        return len(self.idle_list) + len(self.pending)
+
+    def get_pending(self):
+        return self.pending
+
+    def get_pending_num(self):
+        return len(self.pending)
 
     def add_to_idle(self, item):
         if isinstance(item, list):
@@ -93,6 +106,24 @@ class data_storage(object):
 
     def de_register_in_details(self, instance_id):
         try:
-            return self.details.pop(instance_id, None)
+            return_msg = self.details.pop(instance_id, None)
+            logger.debug("return_msg "+ str(return_msg))
+            logger.debug("details is "+ str(self.details))
+            return return_msg
         except KeyError:
             pass
+
+    def add_pending(self,instancied):
+        if isinstance(instancied, list):
+            self.pending.extend(instancied)
+        else:
+            self.pending.append(instancied)
+        logger.debug("add pending "+ str(self.pending))
+
+    def remove_pending(self,instancied):
+        self.pending.remove(instancied)
+        logger.debug("remove pending " + str(self.pending))
+
+    def move_from_pending_to_idle(self,instanceid):
+        self.remove_pending(instanceid)
+        self.add_to_idle(instanceid)

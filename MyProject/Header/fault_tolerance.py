@@ -12,8 +12,6 @@ from SQS import handler as SQS_handler
 import threading
 import time
 
-
-
 logger = get_logger(__file__)
 config = Config()
 valid = 1
@@ -41,6 +39,7 @@ def reboot_not_match(ec2,client,static,sqs):
     global valid
     while (valid):
         reboot_id_list = check_survive(ec2,static)
+        logger.debug("reboot_id_list "+ str(reboot_id_list))
         #EC2_handler.start_instance(reboot_id_list)
         for instance_id in reboot_id_list:
             # get the job assigned to that id

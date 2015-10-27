@@ -44,7 +44,7 @@ def launch_new_instances(ec2,static):
     while (valid):
         
        # compare the idle instances with the local queue
-        idle_num = len(static.get_idle())
+        idle_num = static.get_free_worker()
         count = static.get_sum()
         #waiting_tasks = len(scheduler.LOCAL_QUEUE)
         global LOCAL_QUEUE
@@ -53,8 +53,8 @@ def launch_new_instances(ec2,static):
         waiting_tasks = len(all_tasks)
         extra_workers = math.ceil((waiting_tasks - idle_num)/2)
         if (extra_workers>0) :
-            instances = EC2_handler.create_instance_from_image(ec2,int(extra_workers),static)
-            logger.debug("create"+extra_workers+" new instance"+str(instances)+"with thread")
+            instances = EC2_handler.create_instance_from_image(ec2,1,static)
+            logger.debug("create"+str(int(extra_workers))+" new instance"+str(instances)+"with thread")
             instanceid = EC2_handler.get_instanceId(instances)
             for i in instanceid:
                 count += 1

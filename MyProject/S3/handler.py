@@ -105,11 +105,10 @@ def send_file(conn_s3, name):
     key2.set_contents_from_filename(path_to_result2)
     key2.set_acl('public-read')
     
-def send_files_head(list_of_files):
+def send_files_head(s3,list_of_files):
     path = os.path.join(os.path.dirname(__file__), os.path.pardir)
-    path_to_folder = join(path, LOCAL_IMG)  
-    conn_s3=connect_to_S3()
-    bucket = conn_s3.get_bucket(BUCKET_NAME)
+    path_to_folder = join(path, LOCAL_IMG)
+    bucket = s3.get_bucket(BUCKET_NAME)
     for image in list_of_files:
         key = bucket.new_key(join(INPUT_FOLDER, image))
         logger.debug(key)

@@ -27561,3 +27561,7 @@ __main__ - DEBUG - worker delete msg  state: {'ResponseMetadata': {'HTTPStatusCo
 
 /home/ubuntu/MyProject/Header/scheduler.pyc - 2015-10-26 16:50:53,314 - 
 /home/ubuntu/MyProject/Header/listening_thread.pyc - 2015-10-26 16:50:56,415 - reveive a message in output queue with mashenjun
+S3.handler - 2015-10-27 15:37:25,719 - <Key: cloud-compute,input/sex.jpg>
+S3.handler - 2015-10-27 15:37:25,727 - /home/yun/Documents/Cloudcomputing/MyProject/images/sex.jpg
+S3.handler - 2015-10-27 15:37:48,925 - <Key: cloud-compute,input/yunlu/sex.jpg>
+S3.handler - 2015-10-27 15:37:48,925 - /home/yun/Documents/Cloudcomputing/MyProject/images/yunlu/sex.jpg
