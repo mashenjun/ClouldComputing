@@ -8,6 +8,7 @@ import sys, os
 import boto.utils
 import threading
 import time
+import socket
 from boto3.session import Session
 from configFile.instanceConfig import Config
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
@@ -77,8 +78,11 @@ def set_key_name(ec2,instanceId,key,value):
     return response
 
 
-def start_instance(client,instanceId):
-    response=client.start_instances(InstanceIds=instanceId)
+def start_instance(client, instanceId):
+    if isinstance(instanceId, list):
+        response=client.start_instances(InstanceIds=instanceId)
+    else :
+        response=client.start_instances(InstanceIds=[instanceId])
     return response
 
 def stop_instance(client,instanceId):
@@ -112,6 +116,12 @@ def get_instance_stopped_worker(ec2):
             Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]},{'Name': 'instance-state-name', 'Values': ['stopped','stopping']}])
     return list(instances)
 
+def get_stopped_worker(ec2):
+    instances = ec2.instances.filter(
+            Filters=[{'Name': 'tag:Name', 'Values': ["Worker*"]},{'Name': 'instance-state-name', 'Values': ['stopped']}])
+    return list(instances)
+
+
 def get_local_instanceId():
     region = boto.utils.get_instance_metadata()
     return region["instance-id"]
@@ -120,14 +130,33 @@ def get_local_ipv4():
     region = boto.utils.get_instance_metadata()
     return region["local-ipv4"]
 
+def socket_check(instanceId):
+    ec2client = get_client()
+    response = ec2client.describe_instances(InstanceIds =[instanceId])
+    clientip= response ['Reservations'][0]['Instances'][0]['PrivateDnsName'].split('.')[0]
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.connect((clientip, 22))
+        print "Port 22 reachable"
+        result = True
+    except socket.error as e:
+        print "Error on connect: %s" % e
+        result = False
+    s.close()
+    return result
+
+
 def wait_worker_init(ec2,static,instanceId):
     # check the state of instance
     # wait until it is running
     static.add_pending(instanceId)
     while(not get_instance_status(ec2,instanceId)):
         time.sleep(2)
-    instance = ec2cmdshell.get_instance(instanceId)
-    ec2cmdshell.ssh_to_instance(instance)
+    while (not socket_check(instanceId)):
+        time.sleep(4)
+    #instance = ec2cmdshell.get_instance(instanceId)
+    #ec2cmdshell.ssh_to_instance(instance)
+    time.sleep(1)
     static.move_from_pending_to_idle(instanceId)
 """
 Application

@@ -30,6 +30,9 @@ msg_content = SQS_handler.response(msg)
 # header_Ip = SQS_mp.message_getip(msg_content)
 message_list,HeaderIP = SQS_mp.message_getip(msg_content)
 us.update_static(message_list,HeaderIP)
+response = SQS_handler.delete_msg(client,msg,input_queue)
+logger.debug("worker delete msg  state: " + str(response))
+
 name = message_list.split("/")[0]
 filename = message_list.split("/")[1]
 #msg_list = message_process.message_process(msg)
@@ -40,6 +43,5 @@ S3_handler.clear_local_folder()
 my_instanceId=EC2_handler.get_local_instanceId()
 SQS_handler.create_msg(conn_sqs, OUTPUT_QUEUE_NAME,join(name,filename)+"@"+my_instanceId)
 us.del_static(HeaderIP)
-response = SQS_handler.delete_msg(client,msg,input_queue)
-logger.debug("worker delete msg  state: " + str(response))
+
 

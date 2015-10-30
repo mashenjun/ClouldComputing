@@ -38,7 +38,7 @@ def listening(threadName, sqs,client, delay, static ):
             msg_content=SQSHandler.response(msg)
             user = message_process.message_getusername(msg_content)
             instanceID = message_process.message_gerid(msg_content)
-            logger.debug("reveive a message in output queue with "+user)
+            logger.debug("reveive a message in output queue with "+user + "from instanceId" + str(instanceID))
             static.minus_task(user)
             static.move_to_idle(instanceID)
             # scheduler.send_message_to_sqs(sqs)

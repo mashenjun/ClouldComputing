@@ -7,6 +7,7 @@ import cStringIO
 from Logger import custome_logger
 import SQS.handler as SQS_handler
 from dirtools import Dir, DirState
+import time
 # function used to deal with the S3 storage
 config = Config()
 pirpath = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
@@ -110,11 +111,14 @@ def send_files_head(s3,list_of_files):
     path_to_folder = join(path, LOCAL_IMG)
     bucket = s3.get_bucket(BUCKET_NAME)
     for image in list_of_files:
+        time.sleep(0.5)
         key = bucket.new_key(join(INPUT_FOLDER, image))
         logger.debug(key)
         path_to_result=join(path_to_folder, image)
         logger.debug(path_to_result)
-        key.set_contents_from_filename(path_to_result)
+        bytes_sent = 0
+        while (bytes_sent == 0):
+            bytes_sent = key.set_contents_from_filename(path_to_result)
         key.set_acl('public-read')
 
 def set_dir_for_state():

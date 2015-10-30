@@ -56,7 +56,7 @@ def update_changes_thread(s3,ite_time,static):
             os.remove(old_state_file)
             #insert files into the scheduler
 
-            scheduler.insert_new_job(new_files,static)
+            scheduler.insert_new_job(new_files,static,1)
             logger.debug(scheduler.LOCAL_QUEUE)
             
             #invoke the scheduler and send the msg into sqs

@@ -38,7 +38,7 @@ start_time = time.clock()
 def ec2_init():
     ec2, ec2_client = EC2Handler.connect_ec2()
     instance_num = EC2Handler.get_instance_num(ec2,False)
-    stopped_workers = EC2Handler.get_instance_stopped_worker(ec2)
+    stopped_workers = EC2Handler.get_stopped_worker(ec2)
     if (len(stopped_workers)>0):
         stopped_ID = EC2Handler.get_instanceId(stopped_workers)
         EC2Handler.start_instance(ec2_client,stopped_ID)

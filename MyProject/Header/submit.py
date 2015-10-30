@@ -14,12 +14,11 @@ import time
 
 state_file = 0
 no_hit = 0
-logger = custome_logger.get_logger(__file__)
+logger = custome_logger.get_logger(__name__)
 config = Config()
 
 
 d = S3_handler.set_dir_for_state()
-logger.debug(d)
 dir_state = DirState(d)
 state_file = dir_state.to_json()
 
@@ -35,8 +34,6 @@ def update_changes_thread(ite_time):
         dir_state2 = DirState(d)
         changes = dir_state2 - dir_state
         print changes
-        print(dir_state)
-        print(dir_state2)
         #update the changes (no thread)
         new_files=changes["created"]
         print ("the new files are %s" % new_files)
@@ -53,11 +50,11 @@ def update_changes_thread(ite_time):
             time.sleep(2*ite_time)
             #global no_hit
             #no_hit+=1
-            #if (no_hit==10):
+            #if (no_hit==5):
             #    break
         
 
 def start_submit(time_to_check):
 #initial
     #start the thread
-    thread(update_changes_thread, time_to_check)
+    submit_thread = thread(update_changes_thread, time_to_check)

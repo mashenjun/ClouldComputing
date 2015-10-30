@@ -84,16 +84,24 @@ class data_storage(object):
             logger.debug("remove from busy error" + str(self.busy_list))
 
     def move_to_idle(self, item):
-        self.add_to_idle(item)
-        self.remove_from_busy(item)
+        if item in self.busy_list:
+            self.add_to_idle(item)
+            self.remove_from_busy(item)
+        else:
+            logger.debug("can not move to idle")
+
 
     def move_to_busy(self, item):
-        self.add_to_busy(item)
-        self.remove_from_idle(item)
+        if item in self.idle_list:
+            self.add_to_busy(item)
+            self.remove_from_idle(item)
+        else:
+            logger.debug("can not move to busy")
 
     def add_task(self, name):
         self.task[name] += 1
         logger.debug("add_task " + str(self.task))
+
 
     def minus_task(self, name):
         self.task[name] -= 1

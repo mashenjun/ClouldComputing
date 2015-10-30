@@ -23,7 +23,7 @@ LOCAL_NEW_FILES = {}
 
 
 
-def insert_new_job(new_files,static):
+def insert_new_job(new_files,static,flag):
     global LOCAL_NEW_FILES
     LOCAL_NEW_FILES = {}
     map(insert_single_job,new_files)
@@ -33,7 +33,8 @@ def insert_new_job(new_files,static):
         #static.insert_new_task(user,return_users_tasks(user,static))
         #LOCAL_QUEUE[user]['Deadline'].set_time(LOCAL_QUEUE[user]['Counter'])
         #LOCAL_QUEUE[user]['Deadline']=deadline.deadline(LOCAL_QUEUE[user]['Counter'],static)
-        static.insert_new_task(user,LOCAL_NEW_FILES[user])
+        if flag:
+            static.insert_new_task(user,LOCAL_NEW_FILES[user])
         logger.debug("-----------------------------insert_new_task: " +str(LOCAL_NEW_FILES[user]))
         if (not LOCAL_QUEUE[user].has_key('Deadline')):
             LOCAL_QUEUE[user]['Deadline'] = deadline.deadline(LOCAL_NEW_FILES[user]*3,static)
@@ -66,9 +67,7 @@ def return_task():
     else:
         logger.debug(str(LOCAL_QUEUE))
         user_old = {k:v for k,v in LOCAL_QUEUE.items() if v.has_key('Deadline')}
-        print ("user_old is: " + str(user_old))
         user_list = sorted(user_old.keys(),key = lambda e:user_old[e]['Deadline'].num)
-        print ("user_list is: " + str(user_list))
         #user_list = sorted(LOCAL_QUEUE.keys(),key = lambda e:LOCAL_QUEUE[e]['Deadline'].num)
         #user_tasks = LOCAL_QUEUE[user_list[0]]['Tasks']
         if len(user_list) == 0:
@@ -107,7 +106,6 @@ def send_message_to_sqs(sqs,static):
         if selected_job is None:
             break
         else:
-            logger.debug("send message to worker ")
             selected_id=static.get_idle()[0]
             #move the instance to busy list
             static.move_to_busy(selected_id)
@@ -117,17 +115,20 @@ def send_message_to_sqs(sqs,static):
             msg = selected_job +"#"+header_location
             #send msg to invoke the instance
             SQS_handler.create_msg(sqs,INPUT_QUEUE,msg)
+            logger.debug("send message to worker "+ str(msg))
             #send ssh to the instance
             status,stdout,stderr=ssh_the_worker(selected_id)
-            logger.debug(stdout)
-            logger.debug(stderr)
+            logger.debug("i am stderr" + stderr)
 
 
 def ssh_the_worker(instance_id):
     instance = cmd_handler.get_instance(instance_id)
-    ssh_client = cmd_handler.ssh_to_instance(instance)
-    status,stdout,stderr=cmd_handler.ssh_run_command(ssh_client,"python /home/ubuntu/MyProject/Worker/main.py")
-    return (status,stdout,stderr)
+    try:
+        ssh_client = cmd_handler.ssh_to_instance(instance)
+        status,stdout,stderr=cmd_handler.ssh_run_command(ssh_client,"python /home/ubuntu/MyProject/Worker/main.py")
+        return (status,stdout,stderr)
+    except:
+        return (None,None,None)
 
 def return_users_tasks(user_name,static):
     global LOCAL_QUEUE

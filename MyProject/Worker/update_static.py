@@ -13,6 +13,7 @@ class thread(threading.Thread):
 
 def update_static(msg,Head_location):
     my_instanceId = EC2_handler.get_local_instanceId()
+    print(Head_location)
     static = Pyro4.Proxy("PYRONAME:example.data_storage@"+Head_location)
     static.register_in_details( msg,my_instanceId)
 
