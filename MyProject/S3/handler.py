@@ -8,7 +8,12 @@ from Logger import custome_logger
 import SQS.handler as SQS_handler
 from dirtools import Dir, DirState
 import time
+import sys,os.path
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+import Metrix.timemetrix as mt
 # function used to deal with the S3 storage
+
+
 config = Config()
 pirpath = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
 S3_ACCESS_KEY = config.ConfigSectionMap()["aws_access_key_id"]
@@ -112,6 +117,8 @@ def send_files_head(s3,list_of_files):
     bucket = s3.get_bucket(BUCKET_NAME)
     for image in list_of_files:
         time.sleep(0.5)
+        mt.startTime_dict[image] = time.clock()
+        mt.start_allocate_array.append(time.clock())
         key = bucket.new_key(join(INPUT_FOLDER, image))
         logger.debug(key)
         path_to_result=join(path_to_folder, image)

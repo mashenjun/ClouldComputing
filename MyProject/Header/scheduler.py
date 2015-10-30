@@ -2,17 +2,21 @@ __author__ = 'mashenjun'
 import Pyro4
 import sys,os.path
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from Logger.custome_logger import get_logger
+from Logger.custome_logger import get_logger, get_metrix_logger, get_metrix_startTotalTime_logger
 from configFile.instanceConfig import Config
 from SQS import handler as SQS_handler
 from EC2 import cmdshell as cmd_handler
 from EC2 import handler as EC2_handler
 import deadline
 import Pyro4
+import time
+import Metrix.timemetrix as mt
 
 
 config = Config()
 logger = get_logger(__file__)
+mlogger = get_metrix_logger("mlogger")
+mstlogger = get_metrix_startTotalTime_logger("mstlogger")
 INPUT_QUEUE = config.ConfigSectionMap()["sqs_input_queue"]
 
 LOCAL_QUEUE = {}
@@ -115,9 +119,13 @@ def send_message_to_sqs(sqs,static):
             msg = selected_job +"#"+header_location
             #send msg to invoke the instance
             SQS_handler.create_msg(sqs,INPUT_QUEUE,msg)
+            mlogger.debug(str(selected_job) + " allocate time: " + str(time.clock()- mt.startTime_dict[selected_job]))
+            mt.end_allocate_array.append(time.clock())
+            if len(mt.end_allocate_array) == mt.picNum :
+                mstlogger.debug("The allocate time for all the pics is: " + str(mt.end_allocate_array[-1]-mt.start_allocate_array[0]))
             logger.debug("send message to worker "+ str(msg))
             #send ssh to the instance
-            status,stdout,stderr=ssh_the_worker(selected_id)
+            status,stdout,stderr= ssh_the_worker(selected_id)
             logger.debug("i am stderr" + stderr)
 
 
