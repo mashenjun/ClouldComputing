@@ -24,7 +24,6 @@ logger = get_logger(__file__)
 config = Config()
 valid = 1
 
-
 class thread(threading.Thread):
     def __init__(self, t, *args):
         threading.Thread.__init__(self, target=t, args=args)
@@ -34,32 +33,36 @@ def check_the_idle_list(sqs,static):
     global valid
     while (valid):
         # get both the idle instances number and the waiting tasks
-
         idle_num = len(static.get_idle())
         if (idle_num > 0) :
             scheduler.send_message_to_sqs(sqs,static)
 
+
 def launch_new_instances(ec2,static):
     global valid
     while (valid):
-        
+        now_pending_compensate = static.add_pending_compensate(static.get_pending_num())
+        logger.debug("now_pending_compensate is" + str(now_pending_compensate))
        # compare the idle instances with the local queue
-        idle_num = len(static.get_idle())
+        #idle_num = static.get_free_worker()
         count = static.get_sum()
         #waiting_tasks = len(scheduler.LOCAL_QUEUE)
         global LOCAL_QUEUE
         all_tasks = []        
         [all_tasks.extend(v['Tasks']) for k,v in scheduler.LOCAL_QUEUE.items()]
         waiting_tasks = len(all_tasks)
-        extra_workers = math.ceil((waiting_tasks - idle_num)/2)
+        #extra_workers = math.ceil((waiting_tasks - idle_num)/2)
+        extra_workers = math.ceil(waiting_tasks - 8 * count - now_pending_compensate)
         if (extra_workers>0) :
-            instances = EC2_handler.create_instance_from_image(ec2,int(extra_workers),static)
-            logger.debug("create"+extra_workers+" new instance"+str(instances)+"with thread")
+            instances = EC2_handler.create_instance_from_image(ec2,1,static)
+            logger.debug("create"+str(int(extra_workers))+" new instance"+str(instances)+"with thread")
             instanceid = EC2_handler.get_instanceId(instances)
             for i in instanceid:
                 count += 1
                 EC2_handler.set_key_name(ec2,i,"Name","Worker"+str(count))
+        time.sleep(2)
     logger.debug("OUT launch_new_instances FUNCTION")
+
         
             
         

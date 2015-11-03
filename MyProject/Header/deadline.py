@@ -28,7 +28,7 @@ class deadline(object):
             self.lock.acquire()
             try:
                 self.num -= 1
-                time.sleep(2)
+                time.sleep(4)
             finally:
                 self.lock.release()
             if self.valid == 0:
@@ -48,6 +48,7 @@ class deadline(object):
             self.num +=value
         finally:
             self.lock.release()
+        logger.debug("The deadline add " + str(value) + " value, it is now " + str(self.num))
 
     def set_valid(self,num):
         self.valid = num

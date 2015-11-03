@@ -13,10 +13,10 @@ from multiprocessing.pool import ThreadPool
 import listening_thread
 import time
 import Auto_send_file
-from Logger.custome_logger import get_logger
+from Logger.custome_logger import get_logger,start_record_busy_workers
 import backstage_scheduler
-
 import fault_tolerance
+import delete_worker
 
 config = Config()
 logger = get_logger(__file__)
@@ -36,9 +36,9 @@ start_time = time.clock()
 
 def ec2_init():
     ec2, ec2_client = EC2Handler.connect_ec2()
-    instance_num = EC2Handler.get_instance_num(ec2,False)
-    stopped_workers = EC2Handler.get_instance_stopped_worker(ec2)
-    if (len(stopped_workers)>0):
+    instance_num = EC2Handler.get_instance_num(ec2,True)
+    stopped_workers = EC2Handler.get_stopped_worker(ec2)
+    if (len(stopped_workers)>0 & len(instance_num)< 3):
         stopped_ID = EC2Handler.get_instanceId(stopped_workers)
         EC2Handler.start_instance(ec2_client,stopped_ID)
 
@@ -106,13 +106,13 @@ backstage_scheduler.start_backstage_scheduler(sqs,ec2,static)
 
 listening_thread.create_run_listener(sqs,sqs_client,static)
 
-Auto_send_file.start_submit(1,static)
+Auto_send_file.start_submit(s3,1,static)
 
 fault_tolerance.start_check_survive(ec2,ec2_client,static,sqs)
 
+delete_worker.start_delete_worker(ec2,static)
 
-
-
+start_record_busy_workers(static)
 
 
 

@@ -7,7 +7,13 @@ import cStringIO
 from Logger import custome_logger
 import SQS.handler as SQS_handler
 from dirtools import Dir, DirState
+import time
+import sys,os.path
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+import Metrix.timemetrix as mt
 # function used to deal with the S3 storage
+
+
 config = Config()
 pirpath = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
 S3_ACCESS_KEY = config.ConfigSectionMap()["aws_access_key_id"]
@@ -105,17 +111,24 @@ def send_file(conn_s3, name):
     key2.set_contents_from_filename(path_to_result2)
     key2.set_acl('public-read')
     
-def send_files_head(list_of_files):
+def send_files_head(s3,list_of_files):
     path = os.path.join(os.path.dirname(__file__), os.path.pardir)
-    path_to_folder = join(path, LOCAL_IMG)  
-    conn_s3=connect_to_S3()
-    bucket = conn_s3.get_bucket(BUCKET_NAME)
+    path_to_folder = join(path, LOCAL_IMG)
+    bucket = s3.get_bucket(BUCKET_NAME)
     for image in list_of_files:
+        time.sleep(0.5)
+        mt.startTime_dict_process_time[image] = time.clock()
+        mt.startTime_dict_wall_time[image] = time.time()
+        user = image.split('/')[0]
+        mt.append_time_in_dict_process(user,time.clock())
+        mt.append_time_in_dict_wall(user,time.time())
         key = bucket.new_key(join(INPUT_FOLDER, image))
         logger.debug(key)
         path_to_result=join(path_to_folder, image)
         logger.debug(path_to_result)
-        key.set_contents_from_filename(path_to_result)
+        bytes_sent = 0
+        while (bytes_sent == 0):
+            bytes_sent = key.set_contents_from_filename(path_to_result)
         key.set_acl('public-read')
 
 def set_dir_for_state():

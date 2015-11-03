@@ -12,6 +12,7 @@ from dirtools import Dir, DirState
 import threading
 import time
 import scheduler
+import Metrix.timemetrix as mt
 
 no_hit = 0
 logger = custome_logger.get_logger(__file__)
@@ -31,7 +32,7 @@ class thread(threading.Thread):
 
 lock = threading.Lock()
 
-def update_changes_thread(ite_time,static):
+def update_changes_thread(s3,ite_time,static):
     global LOCAL_QUEUE
     while(1):
         global state_file
@@ -48,7 +49,12 @@ def update_changes_thread(ite_time,static):
         #print (len(new_files))
 
         if (len(new_files)>0):
-            S3_handler.send_files_head(new_files)
+            if mt.setup_start_process_time == 0:
+                mt.setup_start_process_time = time.clock()
+            if mt.setup_start_wall_time == 0:
+                mt.setup_start_wall_time = time.time()
+            time.sleep(0.5)
+            S3_handler.send_files_head(s3,new_files)
             print ("Have uploaded %i files" % len(new_files))
             #change the json file
             old_state_file = state_file
@@ -56,7 +62,7 @@ def update_changes_thread(ite_time,static):
             os.remove(old_state_file)
             #insert files into the scheduler
 
-            scheduler.insert_new_job(new_files,static)
+            scheduler.insert_new_job(new_files,static,1)
             logger.debug(scheduler.LOCAL_QUEUE)
             
             #invoke the scheduler and send the msg into sqs
@@ -75,7 +81,7 @@ def update_changes_thread(ite_time,static):
             #    break
         
 
-def start_submit(time_to_check,static):
+def start_submit(s3,time_to_check,static):
 #initial
     #start the thread
-    thread(update_changes_thread,time_to_check,static)
+    thread(update_changes_thread,s3,time_to_check,static)

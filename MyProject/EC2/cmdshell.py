@@ -6,6 +6,7 @@ Created on Thu Oct  8 11:16:20 2015
 """
 
 import boto.ec2
+import socket
 from boto.manage.cmdshell import sshclient_from_instance
 import sys,os.path
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
@@ -34,12 +35,12 @@ CONN_EC2 = boto.ec2.connect_to_region(REGION,
 
 
 def get_instance(instance_id):
-    instance=CONN_EC2.get_all_instances(instance_ids=[instance_id])[0].instances[0]
+    instance = CONN_EC2.get_all_instances(instance_ids=[instance_id])[0].instances[0]
     return instance
 
 
 def ssh_to_instance(instance):
-    ssh_client=sshclient_from_instance(instance,ssh_key_file=KEY_PATH,user_name='ubuntu')
+    ssh_client = sshclient_from_instance(instance,ssh_key_file=KEY_PATH,user_name='ubuntu')
     return ssh_client
     
 def ssh_run_command(ssh_client,str_command):
@@ -48,7 +49,7 @@ def ssh_run_command(ssh_client,str_command):
 
 def ssh_put_file(ssh_client,src_full,dst_full):
     ssh_client.put_file(src_full,dst_full)
-    
+
 
 
 """
